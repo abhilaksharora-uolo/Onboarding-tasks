@@ -1,0 +1,17 @@
+.main-flex {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .side-left {
+    overflow: hidden;
+    padding: 16px 0px;
+    box-shadow: 2px 0 3px -1px rgba(0, 0, 0, 0.1);
+    width: 17%;
+    height: 100vh;
+  }
+  
+  .side-right {
+    width: 83%;
+    padding-top: 50px;
+  }
