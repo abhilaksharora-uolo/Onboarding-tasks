@@ -1,7 +1,6 @@
 import React from "react";
 import { deleteUser } from "../../api/userService";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from 'react-hot-toast';
 import Delete from "../../utils/svg/Delete";
 import "./Profile.css"
 
@@ -10,8 +9,7 @@ const Profile = ({ user }) => {
     try {
       const res = await deleteUser(id);
       if (res.data.ok) {
-        // toast.success("Deleted successfully");
-        console.log("deleted");
+        toast.success("Deleted successfully");
       } else {
         toast.error("Error in deleting user");
       }
@@ -21,7 +19,8 @@ const Profile = ({ user }) => {
   };
   return (
     <div>
-      <ToastContainer />
+      {/* <ToastContainer position="top-center"/> */}
+      <Toaster />
       <div className="profile">
         <img
           // src={user.url}

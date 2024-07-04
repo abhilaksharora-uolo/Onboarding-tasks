@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import { addUser } from "../../api/userService";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import toast, { Toaster } from 'react-hot-toast';
 import ImageUpload from "../../utils/svg/ImageUpload";
-import "./AddUser.css"
+import "./AddUser.css";
 
 const AddUser = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
   // const [url, setUrl] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       if (!name.trim()) {
         toast.error("Name is required");
@@ -21,7 +22,6 @@ const AddUser = () => {
         toast.error("Email is required");
         return;
       }
-      console.log("Reached");
       if (!validateEmail(email)) {
         toast.error("Email format incorrect");
         return;
@@ -34,18 +34,19 @@ const AddUser = () => {
       const res = await addUser(newUser);
       if (res.data.ok) toast.success("User added successfully");
       else toast.error("Error in adding user");
-      console.log(res);
+      setLoading(false);
     } catch (err) {
       toast.error(err);
     }
   };
+
   const validateEmail = (email) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
   return (
     <div>
-      <ToastContainer />
+      <Toaster />
       <div className="main">
         <div className="add-user">
           <h1 className="">Create Profile</h1>
@@ -66,7 +67,7 @@ const AddUser = () => {
                 <label>Email - ID</label>
                 <input
                   type="email"
-                  placeholder="vikr@uolo.com"
+                  placeholder="Enter email"
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
@@ -84,6 +85,7 @@ const AddUser = () => {
             <div className="card-footer-items">
               <button className="card-button-cancel">Cancel</button>
               <button
+                disabled={loading}
                 className={`card-button ${
                   name && email ? "active" : "disabled"
                 }`}
