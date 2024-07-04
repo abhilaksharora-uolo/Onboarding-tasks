@@ -1,13 +1,27 @@
 import { v4 as uuidv4 } from "uuid";
+
 interface User {
   name: string;
   email: string;
   id: string;
 }
 
+interface AddUserBody {
+  name: string;
+  email: string;
+}
+
+interface GetPageQuery {
+  page?: number;
+}
+
+interface DeleteUserParams {
+  id: string;
+}
+
 let users: User[] = [];
 
-export const addUserService = (body: User) => {
+export const addUserService = (body: AddUserBody) => {
   const { name, email } = body;
   if (!name || !email) {
     return { ok: false, message: "All fields are required" };
@@ -17,7 +31,7 @@ export const addUserService = (body: User) => {
   return { ok: true, newUser };
 };
 
-export const getUserService = (query: any) => {
+export const getUserService = (query: GetPageQuery) => {
   const page: number = Number(query.page) || 1;
   const limit: number = 8;
   const startIndex: number = (page - 1) * limit;
@@ -40,7 +54,7 @@ export const getUserService = (query: any) => {
   };
 };
 
-export const deleteUserService = (params: any) => {
+export const deleteUserService = (params: DeleteUserParams) => {
   const id: string = params.id;
   const userIndex = users.findIndex((user) => user.id === id);
   if (userIndex === -1) {
