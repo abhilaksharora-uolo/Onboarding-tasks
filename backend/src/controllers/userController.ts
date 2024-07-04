@@ -6,15 +6,6 @@ import {
   getUserService,
 } from "../services/userService";
 
-interface User {
-  name: string;
-  email: string;
-  id: string;
-  url: string;
-}
-
-let users: User[] = [];
-
 export const addUser = (req: Request, res: Response) => {
   try {
     const data = addUserService(req.body);
@@ -43,7 +34,7 @@ export const getUsers = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const data = deleteUserService(req.params);
+    const data = deleteUserService({id:req.params.id});
     if (data.ok) {
       res.status(201).json({ data, message: "User Deleted Successfully" });
     } else {
