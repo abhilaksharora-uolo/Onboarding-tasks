@@ -1,6 +1,6 @@
 import React from "react";
-import Avataar from "../../utils/svg/Avataar";
 import "./Header.css";
+import Down from "../../utils/svg/Down";
 
 const Header = () => {
   return (
@@ -10,7 +10,7 @@ const Header = () => {
         <div className="flex">
           <img className="avataar" src="images/G_Avator_1.png" alt="" />
           <p>Vikarant</p>
-          <Avataar />
+          <Down /> 
         </div>
       </div>
     </div>

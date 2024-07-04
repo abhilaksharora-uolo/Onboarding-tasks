@@ -11,9 +11,9 @@ export const addUser = async (user) => {
   }
 };
 
-export const getUsers = async (page) => {
+export const getUsers = async (page, limit) => {
   try {
-    const res = await axios.get(`${API_URL}/?page=${page}`);
+    const res = await axios.get(`${API_URL}/?page=${page}&limit=${limit}`);
     return res.data;
   } catch (err) {
     console.log(err);

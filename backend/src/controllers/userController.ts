@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { Request, Response } from "express";
 import {
   addUserService,
@@ -8,11 +7,16 @@ import {
 
 export const addUser = (req: Request, res: Response) => {
   try {
-    const data = addUserService(req.body);
+    const { name, email } = req.body;
+    if (!(name && email)) {
+      res.status(404).json({ message: "All fields are required" });
+      return;
+    }
+    const data = addUserService(name, email);
     if (data.ok) {
       res.status(201).json({ message: "User added successfully", data });
     } else {
-      res.status(404).json({ message: "All fields are required", data });
+      res.status(404).json({ message: "Error in adding user" });
     }
   } catch (err) {
     throw err;
@@ -34,7 +38,7 @@ export const getUsers = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const data = deleteUserService({id:req.params.id});
+    const data = deleteUserService({ id: req.params.id });
     if (data.ok) {
       res.status(201).json({ data, message: "User Deleted Successfully" });
     } else {

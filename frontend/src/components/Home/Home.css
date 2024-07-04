@@ -8,10 +8,12 @@
     padding: 16px 0px;
     box-shadow: 2px 0 3px -1px rgba(0, 0, 0, 0.1);
     width: 17%;
-    height: 100vh;
+    height: 130vh;
+    position: sticky;
   }
   
   .side-right {
     width: 83%;
     padding-top: 50px;
+    height: max-content;
   }

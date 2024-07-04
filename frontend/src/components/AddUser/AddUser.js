@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { addUser } from "../../api/userService";
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from "react-hot-toast";
 import ImageUpload from "../../utils/svg/ImageUpload";
 import "./AddUser.css";
 
@@ -34,6 +34,8 @@ const AddUser = () => {
       const res = await addUser(newUser);
       if (res.data.ok) toast.success("User added successfully");
       else toast.error("Error in adding user");
+      setName("");
+      setEmail("");
       setLoading(false);
     } catch (err) {
       toast.error(err);
@@ -44,6 +46,7 @@ const AddUser = () => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
+
   return (
     <div>
       <Toaster />

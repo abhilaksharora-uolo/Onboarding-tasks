@@ -3,20 +3,22 @@ import { getUsers } from "../../api/userService";
 import Search from "../../utils/svg/Search";
 import LeftArrow from "../../utils/svg/LeftArrow";
 import RightArrow from "../../utils/svg/RightArrow";
-import Profile from "../Profile/Profile"
-import { toast } from "react-toastify";
-import "./Users.css"
+import Profile from "../Profile/Profile";
+import toast, { Toaster } from "react-hot-toast";
+import "./Users.css";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [limit, setLimit] = useState(8);
 
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const res = await getUsers(page);
+        const res = await getUsers(page, limit);
         if (res.data.ok) {
+          console.log(res.data.results);
           setUsers(res.data.results);
           setTotalPages(res.data.totalPages);
         } else {
@@ -27,7 +29,7 @@ const Users = () => {
       }
     };
     fetchUsers();
-  }, [page, users]);
+  }, [limit, page]);
 
   const renderPageButtons = () => {
     const buttons = [];
@@ -55,8 +57,13 @@ const Users = () => {
     else setPage(1);
   };
 
+  const handleLimit = (e) => {
+    setLimit(e.target.value);
+  };
+
   return (
     <div>
+      <Toaster />
       <div className="team-main">
         <div className="team">
           <h3>Our Team</h3>
@@ -72,7 +79,7 @@ const Users = () => {
                 <div className="team-inner-content">
                   {users.map((user, index) => {
                     return (
-                      <div key={index}>
+                      <div className="team-inner-card" key={index}>
                         <Profile user={user} />
                       </div>
                     );
@@ -86,6 +93,19 @@ const Users = () => {
                   <button onClick={() => handleNext()} className="control">
                     <RightArrow />
                   </button>
+                  <div className="pagination-select">
+                    <select
+                      onChange={(e) => handleLimit(e)}
+                      value={limit}
+                      className="limit"
+                    >
+                      <option value={8}>Limit per page</option>
+                      <option value={8}>8</option>
+                      <option value={12}>12</option>
+                      <option value={16}>16</option>
+                      <option value={20}>20</option>
+                    </select>
+                  </div>
                 </div>
               </>
             ) : (

@@ -18,8 +18,9 @@ const Profile = ({ user }) => {
     }
   };
   return (
-    <div>
+    <div> 
       {/* <ToastContainer position="top-center"/> */}
+      {/* start cards from left  */}
       <Toaster />
       <div className="profile">
         <img

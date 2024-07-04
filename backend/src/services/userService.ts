@@ -13,6 +13,7 @@ interface AddUserBody {
 
 interface GetPageQuery {
   page?: number;
+  limit?: number;
 }
 
 interface DeleteUserParams {
@@ -21,11 +22,7 @@ interface DeleteUserParams {
 
 let users: User[] = [];
 
-export const addUserService = (body: AddUserBody) => {
-  const { name, email } = body;
-  if (!name || !email) {
-    return { ok: false, message: "All fields are required" };
-  }
+export const addUserService = (name: string, email: string) => {
   const newUser: User = { name, email, id: uuidv4() };
   users.push(newUser);
   return { ok: true, newUser };
@@ -33,24 +30,18 @@ export const addUserService = (body: AddUserBody) => {
 
 export const getUserService = (query: GetPageQuery) => {
   const page: number = Number(query.page) || 1;
-  const limit: number = 8;
+  const limit: number = Number(query.limit) || 8;
+  console.log(limit)
   const startIndex: number = (page - 1) * limit;
   const endIndex: number = page * limit;
   const totalPages: number = Math.ceil(users.length / limit);
   const results: User[] = users.slice(startIndex, endIndex);
-  if (results.length <= 0) {
-    return {
-      ok: true,
-      results,
-      totalPages,
-      message: "No users found",
-    };
-  }
   return {
     ok: true,
     results,
     totalPages,
-    message: "Users fetched successfully",
+    message:
+      results.length <= 0 ? "No users found" : "Users fetched successfully",
   };
 };
 

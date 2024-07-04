@@ -1,6 +1,6 @@
 import React from "react";
 
-const Avataar = () => {
+const Down = () => {
   return (
     <div>
       <svg
@@ -23,4 +23,4 @@ const Avataar = () => {
   );
 };
 
-export default Avataar;
+export default Down;
