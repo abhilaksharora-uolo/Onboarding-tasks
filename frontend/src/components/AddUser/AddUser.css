@@ -103,6 +103,7 @@
     border: 1px solid #561fe7;
     margin: 0 10px;
     color: #561fe7;
+    cursor: pointer;
   }
   
   .card-button.active {
@@ -123,7 +124,7 @@
     border-radius: 8px;
     border: 1px 0px 0px 0px;
     border: none;
-    cursor: auto;
+    cursor: not-allowed;
   }
   
   .card-footer-items {
