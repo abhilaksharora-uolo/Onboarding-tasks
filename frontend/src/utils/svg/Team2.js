@@ -1,8 +1,13 @@
 import React from "react";
+import styled from "styled-components";
+
+const SidebarSvg = styled.div`
+  margin: auto 0px;
+`;
 
 const Team2 = () => {
   return (
-    <div className="sidebar-item-svg">
+    <SidebarSvg>
       <svg
         width="22"
         height="16"
@@ -15,7 +20,7 @@ const Team2 = () => {
           fill="#667085"
         />
       </svg>
-    </div>
+    </SidebarSvg>
   );
 };
 

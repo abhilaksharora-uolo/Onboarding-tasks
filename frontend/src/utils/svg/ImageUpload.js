@@ -1,8 +1,13 @@
 import React from "react";
+import styled from "styled-components";
+
+const UploadSvg = styled.div`
+  cursor: pointer;
+`;
 
 const ImageUpload = () => {
   return (
-    <div>
+    <UploadSvg>
       <svg
         width="156"
         height="156"
@@ -71,7 +76,7 @@ const ImageUpload = () => {
           strokeLinejoin="round"
         />
       </svg>
-    </div>
+    </UploadSvg>
   );
 };
 
