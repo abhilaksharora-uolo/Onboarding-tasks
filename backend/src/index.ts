@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import cors from "cors";
 import userRouter from "./routes/userRoutes";
+import { connectDb } from "./config/db";
 
 const app = express();
 app.use(express.json());
@@ -8,6 +9,9 @@ app.use(express.json());
 const PORT = 1000;
 
 app.use(cors());
+
+connectDb();
+
 app.use("/api/v1/", userRouter);
 
 app.use((err: Error, req: Request, res: Response, next: any) => {

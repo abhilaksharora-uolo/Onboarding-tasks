@@ -1,8 +1,13 @@
 import React from "react";
+import styled from "styled-components";
+
+const SidebarSvg = styled.div`
+  margin: auto 0px;
+`;
 
 const Create2 = () => {
   return (
-    <div className="sidebar-item-svg">
+    <SidebarSvg>
       <svg
         width="24"
         height="24"
@@ -27,7 +32,7 @@ const Create2 = () => {
           />
         </g>
       </svg>
-    </div>
+    </SidebarSvg>
   );
 };
 

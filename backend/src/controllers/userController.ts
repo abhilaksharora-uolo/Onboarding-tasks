@@ -4,28 +4,39 @@ import {
   deleteUserService,
   getUserService,
 } from "../services/userService";
+import { IUser } from "../model/userModel";
 
-export const addUser = (req: Request, res: Response) => {
+interface DataObject {
+  ok: boolean;
+  user?: IUser;
+  message?: { message: string };
+}
+
+export const addUser = async (req: Request, res: Response) => {
   try {
-    const { name, email } = req.body;
-    if (!(name && email)) {
+    const { name, email, password } = req.body;
+    if (!req.file) return;
+    const file: Express.Multer.File = req.file;
+    if (!(name && email && password && file)) {
       res.status(404).json({ message: "All fields are required" });
       return;
     }
-    const data = addUserService(name, email);
+    const data: any = await addUserService(name, email, password, file);
+
     if (data.ok) {
       res.status(201).json({ message: "User added successfully", data });
     } else {
-      res.status(404).json({ message: "Error in adding user" });
+      res.status(404).json({ message: "Error in adding user", data });
     }
   } catch (err) {
+    res.status(500).json({ message: "Internal Server Error" });
     throw err;
   }
 };
 
 export const getUsers = async (req: Request, res: Response) => {
   try {
-    const data = getUserService(req.query);
+    const data = await getUserService(req.query);
     if (data.ok) {
       res.status(201).json({ message: "Data fetched successfully", data });
     } else {
@@ -38,7 +49,7 @@ export const getUsers = async (req: Request, res: Response) => {
 
 export const deleteUser = async (req: Request, res: Response) => {
   try {
-    const data = deleteUserService({ id: req.params.id });
+    const data = await deleteUserService({ id: req.params.id });
     if (data.ok) {
       res.status(201).json({ data, message: "User Deleted Successfully" });
     } else {
