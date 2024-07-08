@@ -210,6 +210,10 @@ const AddUser = () => {
   };
 
   const handleFileChange = async (e) => {
+    if (e.target.files[0].size > 1 * 1024 * 1024) {
+      toast.error("Try adding profile picture less than 1 mb file");
+      return;
+    }
     setFile(e.target.files[0]);
   };
 

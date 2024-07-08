@@ -34,21 +34,21 @@ export const addUserService = async (
     if (userFind?.isDeleted) {
       const imageName = Date.now().toString();
       if (file) {
-        const res = await uploadFile(file.buffer, imageName, file.mimetype);
+        await uploadFile(file.buffer, imageName, file.mimetype);
       }
       const hashedPassword = await bcrypt.hash(password, 8);
       const userUpdated = await userModel.findByIdAndUpdate(userFind.id, {
-        name: name,
-        email: email,
-        hashedPassword: hashedPassword,
-        imageName: imageName,
+        name,
+        email,
+        hashedPassword,
+        imageName,
         isDeleted: false,
       });
       return { ok: true, userUpdated };
     }
     const imageName = Date.now().toString();
     if (file) {
-      const res = await uploadFile(file.buffer, imageName, file.mimetype);
+      await uploadFile(file.buffer, imageName, file.mimetype);
     }
     const hashedPassword = await bcrypt.hash(password, 8);
     const user = await userModel.create({
@@ -100,8 +100,6 @@ export const deleteUserService = async (params: DeleteUserParams) => {
       message: "User does not exists",
     };
   }
-  // await deleteFile(user.imageName);
-  // await user.deleteOne();
   return {
     ok: true,
     message: "User deleted successfully",

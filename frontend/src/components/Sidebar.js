@@ -76,7 +76,7 @@ const Sidebar = ({ onItemClick, activeItem }) => {
                   <Team2 />
                 </>
               )}{" "}
-              <SidebarItemPara>All Team member</SidebarItemPara>
+              <SidebarItemPara>All Team Member</SidebarItemPara>
             </SidebarInnerItem>
           </SidebarItem>
           <SidebarItem

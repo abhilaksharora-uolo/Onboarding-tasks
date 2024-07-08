@@ -3,7 +3,6 @@ import cors from "cors";
 import userRouter from "./routes/userRoutes";
 import { connectDb } from "./config/db";
 
-
 const app = express();
 app.use(express.json());
 
