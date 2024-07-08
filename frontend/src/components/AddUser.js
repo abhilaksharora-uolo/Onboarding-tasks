@@ -210,7 +210,6 @@ const AddUser = () => {
   };
 
   const handleFileChange = async (e) => {
-    console.log(e.target.files[0]);
     setFile(e.target.files[0]);
   };
 
@@ -241,7 +240,11 @@ const AddUser = () => {
               <CardLabel>Upload Photo</CardLabel>
               <CardItemsPara>Upload passport size photo</CardItemsPara>
               <LabelInput>
-                <ImageInput type="file" onChange={(e) => handleFileChange(e)} />
+                <ImageInput
+                  type="file"
+                  accept="image/png, image/jpeg"
+                  onChange={(e) => handleFileChange(e)}
+                />
                 <ImageUpload />
               </LabelInput>
               <AddInput>

@@ -1,5 +1,4 @@
 import {
-  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -47,18 +46,6 @@ export const getObjectSignedUrl = async (key: string) => {
     const command = new GetObjectCommand(params);
     const seconds = 60 * 60;
     return await getSignedUrl(s3Client, command, { expiresIn: seconds });
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const deleteFile = async (key: string) => {
-  try {
-    const params = {
-      Bucket: bucketName,
-      Key: key,
-    };
-    return await s3Client.send(new DeleteObjectCommand(params));
   } catch (err) {
     throw err;
   }

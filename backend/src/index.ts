@@ -2,14 +2,6 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import userRouter from "./routes/userRoutes";
 import { connectDb } from "./config/db";
-import aws from "aws-sdk";
-import multer from "multer";
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-} from "@aws-sdk/client-s3";
-import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 
 const app = express();

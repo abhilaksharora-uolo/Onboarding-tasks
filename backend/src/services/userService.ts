@@ -1,4 +1,4 @@
-import { deleteFile, getObjectSignedUrl, uploadFile } from "../config/aws";
+import { getObjectSignedUrl, uploadFile } from "../config/aws";
 import userModel from "../model/userModel";
 import bcrypt from "bcryptjs";
 
@@ -32,7 +32,6 @@ export const addUserService = async (
       return { ok: true, message: { message: "User already exists" } };
     }
     if (userFind?.isDeleted) {
-      console.log("Reached here");
       const imageName = Date.now().toString();
       if (file) {
         const res = await uploadFile(file.buffer, imageName, file.mimetype);
@@ -95,7 +94,6 @@ export const getUserService = async (query: GetPageQuery) => {
 export const deleteUserService = async (params: DeleteUserParams) => {
   const id: string = params.id;
   const user = await userModel.findByIdAndUpdate(id, { isDeleted: true });
-  console.log(user);
   if (!user) {
     return {
       ok: true,

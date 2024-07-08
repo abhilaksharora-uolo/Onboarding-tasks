@@ -147,7 +147,7 @@ const Users = () => {
       }
     };
     fetchUsers();
-  }, [limit, page]);
+  }, [limit, page, users]);
 
   const renderPageButtons = () => {
     const buttons = [];

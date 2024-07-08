@@ -52,7 +52,7 @@ const Header = () => {
         <Logo src="images/vector.png" alt="" />
         <Flex>
           <Avataar src="images/G_Avator_1.png" alt="" />
-          <HeaderP>Vikarant</HeaderP>
+          <HeaderP>Abhilaksh</HeaderP>
           <Down />
         </Flex>
       </HeaderFlex>
