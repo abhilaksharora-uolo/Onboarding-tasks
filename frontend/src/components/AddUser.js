@@ -3,12 +3,16 @@ import { addUser } from "../api/userService";
 import toast, { Toaster } from "react-hot-toast";
 import ImageUpload from "../utils/svg/ImageUpload";
 import styled from "styled-components";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
+import Delete from "../utils/svg/Delete";
 
 const MainContainer = styled.div`
   background: #f6f6f6;
   display: flex;
   flex-direction: row;
   z-index: 98;
+  font-family: "Open Sans";
 `;
 
 const AddUserContainer = styled.div`
@@ -50,7 +54,7 @@ const CardItems = styled.div`
 `;
 
 const CardItemsPara = styled.p`
-  font-family: Open Sans;
+  font-family: "Open Sans";
   font-size: 12px;
   font-weight: 400;
   line-height: 16.34px;
@@ -62,10 +66,10 @@ const CardItemsPara = styled.p`
 
 const CardLabel = styled.label`
   font-size: 14px;
-  font-weight: 100;
+  font-weight: 600;
   text-align: left;
   margin-bottom: 5px;
-
+  font-family: "Open Sans";
   &::after {
     content: " *";
     color: red;
@@ -77,6 +81,7 @@ const CardInput = styled.input`
   border-radius: 8px;
   border: 1px solid #d0d5dd;
   background: #ffffff;
+  font-family: "Open Sans";
 `;
 
 const CardFooter = styled.div`
@@ -120,6 +125,7 @@ const LabelInput = styled.label`
   cursor: pointer
   background-color: black;
   width: fit-content;
+  margin-top: 10px;
 `;
 
 const ImageInput = styled.input`
@@ -156,6 +162,56 @@ const ModalImg = styled.img`
   height: 80px;
 `;
 
+const MainFlex = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const SideLeft = styled.div`
+  overflow: hidden;
+  padding: 16px 0px;
+  box-shadow: 2px 0 3px -1px rgba(0, 0, 0, 0.1);
+  width: 17%;
+  height: 130vh;
+  position: sticky;
+`;
+
+const SideRight = styled.div`
+  width: 83%;
+  padding-top: 50px;
+  height: max-content;
+`;
+
+const ImagePrev = styled.img`
+  width: 156px;
+  height: 156px;
+  border-radius: 50%;
+`;
+
+const ImagePrevPara = styled.p`
+  font-size: 14px;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  margin-top: 5px;
+`;
+
+const DeleteButton = styled.button`
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background: none;
+  border: none;
+  cursor: pointer;
+`;
+
+const Prev = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 156px;
+  height: 176px;
+`;
+
 const AddUser = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -163,6 +219,7 @@ const AddUser = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [file, setFile] = useState(null);
   const [modal, setModal] = useState(false);
+  const [preview, setPreview] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -217,6 +274,8 @@ const AddUser = () => {
       return;
     }
     setFile(e.target.files[0]);
+    const blobUrl = URL.createObjectURL(e.target.files[0]);
+    setPreview(blobUrl);
   };
 
   const handleCancel = (e) => {
@@ -238,75 +297,105 @@ const AddUser = () => {
   return (
     <div>
       <Toaster />
-      <MainContainer>
-        <AddUserContainer>
-          <Title>Create Profile</Title>
-          <Card>
-            <CardItems>
-              <CardLabel>Upload Photo</CardLabel>
-              <CardItemsPara>Upload passport size photo</CardItemsPara>
-              <LabelInput>
-                
-                    <ImageInput
-                      type="file"
-                      accept="image/png, image/jpeg"
-                      onChange={(e) => handleFileChange(e)}
-                    />
-                    <ImageUpload />
-               
-              </LabelInput>
-              <AddInput>
-                <CardLabel>Name</CardLabel>
-                <CardInput
-                  type="text"
-                  value={name}
-                  placeholder="Enter full name"
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </AddInput>
-              <AddInput>
-                <CardLabel>Email - ID</CardLabel>
-                <CardInput
-                  type="email"
-                  value={email}
-                  placeholder="Enter email"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </AddInput>
-              <AddInput>
-                <CardLabel>Password</CardLabel>
-                <CardInput
-                  type="password"
-                  value={password}
-                  placeholder="*******"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </AddInput>
-              <AddInput>
-                <CardLabel>Confirm Password</CardLabel>
-                <CardInput
-                  type="password"
-                  value={confirmPassword}
-                  placeholder="*******"
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-              </AddInput>
-            </CardItems>
-          </Card>
-          <CardFooter>
-            <CardFooterItems>
-              <CardButtonCancel onClick={handleCancel}>Cancel</CardButtonCancel>
-              <CardButton
-                disabled={!isActive}
-                active={isActive}
-                onClick={handleSubmit}
-              >
-                Save
-              </CardButton>
-            </CardFooterItems>
-          </CardFooter>
-        </AddUserContainer>
-      </MainContainer>
+      <div>
+        <Header />
+        <MainFlex>
+          <SideLeft>
+            <Sidebar activeItem={2} />
+          </SideLeft>
+          <SideRight>
+            <MainContainer>
+              <AddUserContainer>
+                <Title>Create Profile</Title>
+                <Card>
+                  <CardItems>
+                    <CardLabel>Upload Photo</CardLabel>
+                    <CardItemsPara>Upload passport size photo</CardItemsPara>
+                    <LabelInput>
+                      {!file ? (
+                        <>
+                          {" "}
+                          <ImageInput
+                            type="file"
+                            accept="image/png, image/jpeg"
+                            onChange={(e) => handleFileChange(e)}
+                          />
+                          <ImageUpload />
+                        </>
+                      ) : (
+                        <>
+                          <Prev>
+                            <DeleteButton
+                              onClick={() => {
+                                setFile();
+                              }}
+                            >
+                              <Delete />
+                            </DeleteButton>
+                            <ImagePrev src={preview} alt="Preview" />
+                            <ImagePrevPara>{file.name}</ImagePrevPara>
+                          </Prev>
+                        </>
+                      )}
+                    </LabelInput>
+                    <AddInput>
+                      <CardLabel>Name</CardLabel>
+                      <CardInput
+                        type="text"
+                        value={name}
+                        placeholder="Enter full name"
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                    </AddInput>
+                    <AddInput>
+                      <CardLabel>Email - ID</CardLabel>
+                      <CardInput
+                        type="email"
+                        value={email}
+                        placeholder="Enter email"
+                        onChange={(e) => setEmail(e.target.value)}
+                      />
+                    </AddInput>
+                    <AddInput>
+                      <CardLabel>Password</CardLabel>
+                      <CardInput
+                        type="password"
+                        value={password}
+                        placeholder="*******"
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                    </AddInput>
+                    <AddInput>
+                      <CardLabel>Confirm Password</CardLabel>
+                      <CardInput
+                        type="password"
+                        value={confirmPassword}
+                        placeholder="*******"
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                      />
+                    </AddInput>
+                  </CardItems>
+                </Card>
+                <CardFooter>
+                  <CardFooterItems>
+                    <CardButtonCancel onClick={handleCancel}>
+                      Cancel
+                    </CardButtonCancel>
+                    <CardButton
+                      disabled={!isActive}
+                      active={isActive}
+                      onClick={handleSubmit}
+                    >
+                      Save
+                    </CardButton>
+                  </CardFooterItems>
+                </CardFooter>
+              </AddUserContainer>
+            </MainContainer>
+          </SideRight>
+        </MainFlex>
+      </div>
+
       {modal ? (
         <ModalMain>
           <Modal>

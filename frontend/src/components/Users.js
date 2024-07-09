@@ -6,6 +6,8 @@ import RightArrow from "../utils/svg/RightArrow";
 import Profile from "./Profile";
 import toast, { Toaster } from "react-hot-toast";
 import styled from "styled-components";
+import Header from "./Header";
+import Sidebar from "./Sidebar";
 
 const TeamMain = styled.div`
   display: flex;
@@ -24,6 +26,7 @@ const TeamTitle = styled.h3`
   font-weight: 700;
   text-align: center;
   margin: 0;
+  font-family: Outfit;
 `;
 
 const SearchD = styled.div`
@@ -126,13 +129,33 @@ const Limit = styled.select`
   height: 32px;
 `;
 
+const MainFlex = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const SideLeft = styled.div`
+  overflow: hidden;
+  padding: 16px 0px;
+  box-shadow: 2px 0 3px -1px rgba(0, 0, 0, 0.1);
+  width: 17%;
+  height: 130vh;
+  position: sticky;
+`;
+
+const SideRight = styled.div`
+  width: 83%;
+  padding-top: 50px;
+  height: max-content;
+`;
+
 const Users = () => {
   const [users, setUsers] = useState([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit, setLimit] = useState(8);
 
-  const fetchUsers = (async () => {
+  const fetchUsers = async () => {
     try {
       const res = await getUsers(page, limit);
       if (res.data.ok) {
@@ -144,7 +167,7 @@ const Users = () => {
     } catch (err) {
       toast.error(err);
     }
-  });
+  };
 
   useEffect(() => {
     fetchUsers();
@@ -197,62 +220,72 @@ const Users = () => {
   return (
     <div>
       <Toaster />
-      <TeamMain>
-        <Team>
-          <TeamTitle>Our Team</TeamTitle>
-          <SearchD>
-            <Search />
-            <SearchInput
-              type="text"
-              placeholder="Search by Name, or Email id"
-            />
-            <SearchButton>Search</SearchButton>
-          </SearchD>
+      <div>
+        <Header />
+        <MainFlex>
+          <SideLeft>
+            <Sidebar activeItem={1} />
+          </SideLeft>
+          <SideRight>
+            <TeamMain>
+              <Team>
+                <TeamTitle>Our Team</TeamTitle>
+                <SearchD>
+                  <Search />
+                  <SearchInput
+                    type="text"
+                    placeholder="Search by Name, or Email id"
+                  />
+                  <SearchButton>Search</SearchButton>
+                </SearchD>
 
-          <TeamContent>
-            {users.length > 0 ? (
-              <>
-                <TeamInnerComponent>
-                  {users.map((user, index) => {
-                    return (
-                      <div key={index}>
-                        <Profile user={user} onDelete={handleDelete} />
-                      </div>
-                    );
-                  })}
-                </TeamInnerComponent>
-                <Pagination>
-                  <ControlButton onClick={() => handlePrev()}>
-                    <LeftArrow />
-                  </ControlButton>
-                  {renderPageButtons()}
-                  <ControlButton onClick={() => handleNext()}>
-                    <RightArrow />
-                  </ControlButton>
-                  <div>
-                    <Limit onChange={(e) => handleLimit(e)} value={limit}>
-                      <option value={8}>Limit per page</option>
-                      <option value={8}>8</option>
-                      <option value={12}>12</option>
-                      <option value={16}>16</option>
-                      <option value={20}>20</option>
-                    </Limit>
-                  </div>
-                </Pagination>
-              </>
-            ) : (
-              <NoData>
-                <NoDataImg
-                  width="24"
-                  height="24"
-                  src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127829.jpg?t=st=1720024012~exp=1720027612~hmac=eecbbc5dd1c2c2fe883a1573412716a1e33c1ab9e3b1fa79e7a24ee4071aac61&w=1060"
-                  alt="no-data-availible"
-                />
-              </NoData>
-            )}
-          </TeamContent>
-        </Team>
-      </TeamMain>
+                <TeamContent>
+                  {users.length > 0 ? (
+                    <>
+                      <TeamInnerComponent>
+                        {users.map((user, index) => {
+                          return (
+                            <div key={index}>
+                              <Profile user={user} onDelete={handleDelete} />
+                            </div>
+                          );
+                        })}
+                      </TeamInnerComponent>
+                      <Pagination>
+                        <ControlButton onClick={() => handlePrev()}>
+                          <LeftArrow />
+                        </ControlButton>
+                        {renderPageButtons()}
+                        <ControlButton onClick={() => handleNext()}>
+                          <RightArrow />
+                        </ControlButton>
+                        <div>
+                          <Limit onChange={(e) => handleLimit(e)} value={limit}>
+                            <option value={8}>Limit per page</option>
+                            <option value={8}>8</option>
+                            <option value={12}>12</option>
+                            <option value={16}>16</option>
+                            <option value={20}>20</option>
+                          </Limit>
+                        </div>
+                      </Pagination>
+                    </>
+                  ) : (
+                    <NoData>
+                      <NoDataImg
+                        width="24"
+                        height="24"
+                        src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127829.jpg?t=st=1720024012~exp=1720027612~hmac=eecbbc5dd1c2c2fe883a1573412716a1e33c1ab9e3b1fa79e7a24ee4071aac61&w=1060"
+                        alt="no-data-availible"
+                      />
+                    </NoData>
+                  )}
+                </TeamContent>
+              </Team>
+            </TeamMain>
+          </SideRight>
+        </MainFlex>
+      </div>
     </div>
   );
 };

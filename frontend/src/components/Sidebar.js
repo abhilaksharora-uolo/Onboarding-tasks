@@ -4,6 +4,7 @@ import Create2 from "../utils/svg/Create2";
 import Team1 from "../utils/svg/Team1";
 import Team2 from "../utils/svg/Team2";
 import styled from "styled-components";
+import { Link } from "react-router-dom";
 
 const SidebarD = styled.div`
   margin-top: 60px;
@@ -19,13 +20,14 @@ const SidebarItems = styled.div`
   cursor: pointer;
 `;
 
-const SidebarItem = styled.button`
+const SidebarItem = styled(Link)`
   background: #ffffff;
   border: none;
   display: flex;
   flex-direction: row;
   cursor: pointer;
   width: 100%;
+  text-decoration: none;
 
   &.clicked {
     color: #561fe7;
@@ -49,6 +51,7 @@ const SidebarItemPara = styled.p`
   font-weight: 600;
   color: #667085;
   margin-left: 7px;
+  font-family: "Open Sans";
 `;
 
 const SidebarInnerItem = styled.div`
@@ -57,13 +60,13 @@ const SidebarInnerItem = styled.div`
   flex-direction: row;
 `;
 
-const Sidebar = ({ onItemClick, activeItem }) => {
+const Sidebar = ({ activeItem }) => {
   return (
     <div>
       <SidebarD>
         <SidebarItems>
           <SidebarItem
-            onClick={() => onItemClick(1)}
+            to={"/"}
             className={`sidebar-item ${activeItem === 1 ? "clicked" : ""}`}
           >
             <SidebarInnerItem>
@@ -80,7 +83,7 @@ const Sidebar = ({ onItemClick, activeItem }) => {
             </SidebarInnerItem>
           </SidebarItem>
           <SidebarItem
-            onClick={() => onItemClick(2)}
+            to={"/add-user"}
             className={`sidebar-item ${activeItem === 2 ? "clicked" : ""}`}
           >
             <SidebarInnerItem>
