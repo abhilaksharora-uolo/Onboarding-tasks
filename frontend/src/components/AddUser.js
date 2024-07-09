@@ -193,7 +193,9 @@ const AddUser = () => {
       formData.append("password", password);
       formData.append("file", file);
       const res = await addUser(formData);
-      if (res.data.ok) {
+      if (res.data.ok && res.data.error) {
+        toast.error(res.data.error);
+      } else if (res.data.ok) {
         setModal(true);
         setTimeout(() => {
           setModal(false);
@@ -210,7 +212,7 @@ const AddUser = () => {
   };
 
   const handleFileChange = async (e) => {
-    if (e.target.files[0].size > 1 * 1024 * 1024) {
+    if (e.target.files[0] && e.target.files[0].size > 1 * 1024 * 1024) {
       toast.error("Try adding profile picture less than 1 mb file");
       return;
     }
