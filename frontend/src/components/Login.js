@@ -49,7 +49,7 @@ const FrameTitle = styled.h3`
 `;
 
 const FramePara = styled.p`
-  font-family: Open Sans;
+  font-family: "Open Sans";
   font-size: 14px;
   font-weight: 400;
   line-height: 19.07px;

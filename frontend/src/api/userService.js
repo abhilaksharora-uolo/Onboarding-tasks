@@ -26,7 +26,7 @@ export const getUsers = async (page, limit) => {
 
 export const deleteUser = async (id) => {
   try {
-    const res = await axios.put(`${API_URL}/${id}`);
+    const res = await axios.delete(`${API_URL}/${id}`);
     return res.data;
   } catch (err) {
     console.log(err);

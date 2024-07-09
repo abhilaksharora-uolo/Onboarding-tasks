@@ -13,6 +13,7 @@ const ProfileD = styled.div`
   margin: 10px;
   overflow: hidden;
   position: relative;
+  font-family: Outfit;
 
   &:hover {
     .delete-btn {
