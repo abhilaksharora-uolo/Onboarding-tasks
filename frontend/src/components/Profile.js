@@ -1,6 +1,5 @@
 import React from "react";
-import { deleteUser } from "../api/userService";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import Delete from "../utils/svg/Delete";
 import styled from "styled-components";
 
@@ -60,31 +59,15 @@ const ProfileContent = styled.div`
   padding: 10px 0;
 `;
 
-const Profile = ({ user }) => {
-  const handleDelete = async (id) => {
-    try {
-      const res = await deleteUser(id);
-      if (res.data.ok) {
-        toast.success("Deleted successfully");
-      } else {
-        toast.error("Error in deleting user");
-      }
-    } catch (err) {
-      toast.error(err);
-    }
-  };
+const Profile = ({ user, onDelete }) => {
   return (
     <div>
       <Toaster />
       <ProfileD>
-        <ProfileImg
-          src={user.imageUrl}
-          // src="https://s3-alpha-sig.figma.com/img/e295/ca2c/8a00e941c07e35d7f4b29b79fd54acd7?Expires=1721001600&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=WhZlyNGV-pFnrumff4yqK0CDYkUeGmljP5vx-zYuO7dL~l-l-nJLHIGcGMwejzyTdBmgeh1BbkZq8OKTDGK9RLWN1DGJnizCh~wBjk2nefqJQ6dlNnXrf3esuNBWkVy6Hx-zH1Bh~VWApC04S-HzG-vNKBR2Zd2Nh9gY2T~Uiog3lQyThL-KNcIZK49Ywkctf0JijpwzurqlRE8ZLz4YSP5lHABFleA2y2PmbhJHfHOqRszf63ZUzddbZ7lNGBKQKKFhU1J~119FzEI2yA-wIsDd9bCUFwjkl1SVXf-64KHJ6XFvULJPYtPorMIdO5KvEUOkHpFsv5lgoElT2cKluw__"
-          alt="User"
-        />
+        <ProfileImg src={user.imageUrl} alt="User" />
         <DeleteButton
           className="delete-btn"
-          onClick={(e) => handleDelete(user._id)}
+          onClick={(e) => onDelete(user._id)}
         >
           <Delete />
         </DeleteButton>

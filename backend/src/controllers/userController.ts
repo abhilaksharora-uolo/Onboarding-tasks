@@ -4,7 +4,7 @@ import {
   deleteUserService,
   getUserService,
 } from "../services/userService";
-import userModel, { IUser } from "../model/userModel";
+import { IUser } from "../model/userModel";
 
 interface DataObject {
   ok: boolean;
@@ -22,7 +22,7 @@ export const addUser = async (req: Request, res: Response) => {
       res.status(404).json({ message: "All fields are required" });
       return;
     }
-    const data: any = await addUserService(name, email, password, file);
+    const data: DataObject = await addUserService(name, email, password, file);
     if (data.ok) {
       res.status(201).json({ message: "User added successfully", data });
     } else {

@@ -5,7 +5,7 @@ const LoginImage = styled.div`
   padding: 50px;
 `;
 
-const LoginImageI = styled.div`
+const LoginImageI = styled.img`
   width: 580px;
   height: 770px;
   top: 127px;
@@ -68,24 +68,21 @@ const Line = styled.div`
   border: 1px solid #00000033;
 `;
 
-const Logo = styled.img`
-  width: 70px;
-  height: 24px;
-`;
-
 const Login = () => {
   return (
     <div className="login">
-      <div className="flex">
-        <div className="login-image">
-          <img src="images/image 550.png" alt="" />
-        </div>
-        <div className="frame">
-          <img src="images/vector.png" alt="" />
-          <div className="line"></div>
+      <Flex>
+        <LoginImage>
+          <LoginImageI src="images/image 550.png" alt="" />
+        </LoginImage>
+        <Frame>
+          <FrameImage src="images/vector.png" alt="" />
+          <Line></Line>
           <div>
-            <h3>Welcome Back!</h3>
-            <p>Log in to continue and access all the features</p>
+            <FrameTitle>Welcome Back!</FrameTitle>
+            <FramePara>
+              Log in to continue and access all the features
+            </FramePara>
           </div>
           <div>
             <label>Enter Email</label>
@@ -96,8 +93,8 @@ const Login = () => {
 
             <button>Login</button>
           </div>
-        </div>
-      </div>
+        </Frame>
+      </Flex>
     </div>
   );
 };

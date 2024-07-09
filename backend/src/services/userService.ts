@@ -1,4 +1,4 @@
-import { getObjectSignedUrl, uploadFile } from "../config/aws";
+import { getObjectSignedUrl, uploadFile } from "../controllers/imageController";
 import userModel from "../model/userModel";
 import bcrypt from "bcryptjs";
 
@@ -33,8 +33,13 @@ export const addUserService = async (
     }
     const imageName = Date.now().toString();
     if (file) {
-      await uploadFile(file.buffer, imageName, file.mimetype);
+      await uploadFile(
+        file.buffer,
+        `${imageName}${file.originalname}`,
+        file.mimetype
+      );
     }
+    const img = `${imageName}${file.originalname}`;
     const hashedPassword = await bcrypt.hash(password, 8);
 
     if (userFind?.isDeleted) {
@@ -42,7 +47,7 @@ export const addUserService = async (
         name,
         email,
         hashedPassword,
-        imageName,
+        imageName: img,
         isDeleted: false,
       });
       return { ok: true, userUpdated };
@@ -52,7 +57,7 @@ export const addUserService = async (
       name,
       email,
       hashedPassword,
-      imageName,
+      imageName: img,
     });
 
     return { ok: true, user };
@@ -74,8 +79,8 @@ export const getUserService = async (query: GetPageQuery) => {
       .skip(startIndex)
       .limit(limit);
 
-    for (const u of res) {
-      u.imageUrl = await getObjectSignedUrl(u.imageName);
+    for (const user of res) {
+      user.imageUrl = await getObjectSignedUrl(user.imageName);
     }
 
     return {
