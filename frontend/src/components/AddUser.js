@@ -199,7 +199,7 @@ const AddUser = () => {
         setModal(true);
         setTimeout(() => {
           setModal(false);
-        }, 5000);
+        }, 3000);
       } else toast.error("Error in adding user");
       setName("");
       setEmail("");
@@ -238,7 +238,7 @@ const AddUser = () => {
   return (
     <div>
       <Toaster />
-      <MainContainer className={`${modal ? "modalHover" : ""}`}>
+      <MainContainer>
         <AddUserContainer>
           <Title>Create Profile</Title>
           <Card>
@@ -246,12 +246,14 @@ const AddUser = () => {
               <CardLabel>Upload Photo</CardLabel>
               <CardItemsPara>Upload passport size photo</CardItemsPara>
               <LabelInput>
-                <ImageInput
-                  type="file"
-                  accept="image/png, image/jpeg"
-                  onChange={(e) => handleFileChange(e)}
-                />
-                <ImageUpload />
+                
+                    <ImageInput
+                      type="file"
+                      accept="image/png, image/jpeg"
+                      onChange={(e) => handleFileChange(e)}
+                    />
+                    <ImageUpload />
+               
               </LabelInput>
               <AddInput>
                 <CardLabel>Name</CardLabel>

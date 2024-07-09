@@ -6,8 +6,8 @@ const Delete = () => {
       <svg
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0,0,256,256"
-        width="40px"
-        height="40px"
+        width="32px"
+        height="32px"
       >
         <g
           fill="#ee4242"
