@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getUsers } from "../api/userService";
+import { deleteUser, getUsers } from "../api/userService";
 import Search from "../utils/svg/Search";
 import LeftArrow from "../utils/svg/LeftArrow";
 import RightArrow from "../utils/svg/RightArrow";
@@ -132,22 +132,37 @@ const Users = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [limit, setLimit] = useState(8);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await getUsers(page, limit);
-        if (res.data.ok) {
-          setUsers(res.data.res);
-          setTotalPages(res.data.totalPages);
-        } else {
-          toast.error("Error in fetching users from database");
-        }
-      } catch (err) {
-        toast.error(err);
+  const fetchUsers = (async () => {
+    try {
+      const res = await getUsers(page, limit);
+      if (res.data.ok) {
+        setUsers(res.data.res);
+        setTotalPages(res.data.totalPages);
+      } else {
+        toast.error("Error in fetching users from database");
       }
-    };
+    } catch (err) {
+      toast.error(err);
+    }
+  });
+
+  useEffect(() => {
     fetchUsers();
   }, [limit, page]);
+
+  const handleDelete = async (id) => {
+    try {
+      const res = await deleteUser(id);
+      if (res.data.ok) {
+        fetchUsers();
+        toast.success("Deleted successfully");
+      } else {
+        toast.error("Error in deleting user");
+      }
+    } catch (err) {
+      toast.error(err);
+    }
+  };
 
   const renderPageButtons = () => {
     const buttons = [];
@@ -201,7 +216,7 @@ const Users = () => {
                   {users.map((user, index) => {
                     return (
                       <div key={index}>
-                        <Profile user={user} />
+                        <Profile user={user} onDelete={handleDelete} />
                       </div>
                     );
                   })}
@@ -215,10 +230,7 @@ const Users = () => {
                     <RightArrow />
                   </ControlButton>
                   <div>
-                    <Limit
-                      onChange={(e) => handleLimit(e)}
-                      value={limit}
-                    >
+                    <Limit onChange={(e) => handleLimit(e)} value={limit}>
                       <option value={8}>Limit per page</option>
                       <option value={8}>8</option>
                       <option value={12}>12</option>
