@@ -29,14 +29,15 @@ export const addUserService = async (
   try {
     const userFind = await userModel.findOne({ email });
     if (userFind && !userFind.isDeleted) {
-      return { ok: true, message: { message: "User already exists" } };
+      return { ok: true, error: "User already exists" };
     }
+    const imageName = Date.now().toString();
+    if (file) {
+      await uploadFile(file.buffer, imageName, file.mimetype);
+    }
+    const hashedPassword = await bcrypt.hash(password, 8);
+
     if (userFind?.isDeleted) {
-      const imageName = Date.now().toString();
-      if (file) {
-        await uploadFile(file.buffer, imageName, file.mimetype);
-      }
-      const hashedPassword = await bcrypt.hash(password, 8);
       const userUpdated = await userModel.findByIdAndUpdate(userFind.id, {
         name,
         email,
@@ -46,20 +47,17 @@ export const addUserService = async (
       });
       return { ok: true, userUpdated };
     }
-    const imageName = Date.now().toString();
-    if (file) {
-      await uploadFile(file.buffer, imageName, file.mimetype);
-    }
-    const hashedPassword = await bcrypt.hash(password, 8);
+
     const user = await userModel.create({
       name,
       email,
       hashedPassword,
       imageName,
     });
+
     return { ok: true, user };
   } catch (err) {
-    return { ok: false, message: { message: (err as Error).message } };
+    return { ok: false, message: (err as Error).message };
   }
 };
 
@@ -68,10 +66,11 @@ export const getUserService = async (query: GetPageQuery) => {
     const page: number = Number(query.page) || 1;
     const limit: number = Number(query.limit) || 8;
     const startIndex: number = (page - 1) * limit;
-    const len = await userModel.collection.countDocuments();
+    const len = await userModel.collection.countDocuments({ isDeleted: false });
     const totalPages: number = Math.ceil(len / limit);
     const res = await userModel
       .find({ isDeleted: false })
+      .sort({ updatedAt: 1 })
       .skip(startIndex)
       .limit(limit);
 
@@ -87,7 +86,7 @@ export const getUserService = async (query: GetPageQuery) => {
         res.length <= 0 ? "No users found" : "Users fetched successfully",
     };
   } catch (err) {
-    return { ok: false, err: { message: (err as Error).message } };
+    return { ok: false, message: (err as Error).message };
   }
 };
 
@@ -96,7 +95,7 @@ export const deleteUserService = async (params: DeleteUserParams) => {
   const user = await userModel.findByIdAndUpdate(id, { isDeleted: true });
   if (!user) {
     return {
-      ok: true,
+      ok: false,
       message: "User does not exists",
     };
   }

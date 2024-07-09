@@ -9,6 +9,7 @@ export const addUser = async (formData) => {
         "Content-Type": "multipart/form-data",
       },
     });
+    console.log(res, "RESF")
     return res.data;
   } catch (err) {
     console.log(err);
