@@ -26,28 +26,14 @@ const SideRight = styled.div`
 `;
 
 const Home = () => {
-  const [item, setItem] = useState(1);
-  const handleItem = (id) => {
-    setItem(id);
-  };
-  const renderComponent = () => {
-    switch (item) {
-      case 1:
-        return <Users />;
-      case 2:
-        return <AddUser />;
-      default:
-        return <Users />;
-    }
-  };
   return (
     <div>
       <Header />
       <MainFlex>
         <SideLeft>
-          <Sidebar onItemClick={handleItem} activeItem={item} />
+          <Sidebar />
         </SideLeft>
-        <SideRight>{renderComponent()}</SideRight>
+        <SideRight></SideRight>
       </MainFlex>
     </div>
   );
