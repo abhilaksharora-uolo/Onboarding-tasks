@@ -8,6 +8,7 @@ export interface IUser extends Document {
   imageName: string;
   imageUrl?: string;
   isDeleted: boolean;
+  updatedAt: Date;
 }
 
 const UserSchema: Schema = new Schema({

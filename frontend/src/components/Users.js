@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { deleteUser, getUsers } from "../api/userService";
+import { deleteUser, getUsers, searchUser } from "../api/userService";
 import Search from "../utils/svg/Search";
 import LeftArrow from "../utils/svg/LeftArrow";
 import RightArrow from "../utils/svg/RightArrow";
@@ -154,6 +154,7 @@ const Users = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit, setLimit] = useState(8);
+  const [searchText, setSearchText] = useState("");
 
   const fetchUsers = async () => {
     try {
@@ -203,6 +204,17 @@ const Users = () => {
     return buttons;
   };
 
+  const handleSearch = async (searchText) => {
+    try {
+      const res = await searchUser(searchText);
+      setUsers(res.data.res);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  console.log(users);
+
   const handlePrev = () => {
     if (page <= 1) setPage(totalPages);
     else setPage(page - 1);
@@ -234,9 +246,19 @@ const Users = () => {
                   <Search />
                   <SearchInput
                     type="text"
+                    onChange={(e) => {
+                      setSearchText(e.target.value);
+                      handleSearch(searchText);
+                    }}
                     placeholder="Search by Name, or Email id"
                   />
-                  <SearchButton>Search</SearchButton>
+                  <SearchButton
+                    onClick={() => {
+                      handleSearch(searchText);
+                    }}
+                  >
+                    Search
+                  </SearchButton>
                 </SearchD>
 
                 <TeamContent>
