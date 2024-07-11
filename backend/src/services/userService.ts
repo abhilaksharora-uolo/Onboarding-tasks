@@ -269,42 +269,34 @@ export const deleteUserService = async (params: DeleteUserParams) => {
 
 export const searchUserService = async (query: any) => {
   try {
-    let esQuery: any;
-
-    if (query) {
-      esQuery = {
+    const body: any = await client.search({
+      index: "users",
+      body: {
         query: {
           bool: {
             should: [
               {
-                wildcard: {
-                  name: {
-                    value: `*${query}*`,
-                  },
+                multi_match: {
+                  query: query,
+                  fields: ["name", "email"],
+                  type: "best_fields",
+                  fuzziness: "AUTO",
+                  operator: "OR",
                 },
               },
               {
-                wildcard: {
-                  email: {
-                    value: `*${query}*`,
+                match_phrase_prefix: {
+                  name: {
+                    query: query,
+                    slop: 10,
                   },
                 },
               },
             ],
+            minimum_should_match: 1,
           },
         },
-      };
-    } else {
-      esQuery = {
-        query: {
-          match_all: {},
-        },
-      };
-    }
-
-    const body: any = await client.search({
-      index: "users",
-      body: esQuery,
+      },
     });
 
     const res = body.hits.hits.map((hit: any) => ({
