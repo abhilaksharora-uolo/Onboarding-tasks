@@ -4,7 +4,6 @@ import {
   deleteUserFromElastic,
   deleteUserService,
   getUserService,
-  searchUserService,
 } from "../services/userService";
 import { IUser } from "../model/userModel";
 import { client } from "../config/initializeElasticsearch";
@@ -57,20 +56,6 @@ export const deleteUser = async (req: Request, res: Response) => {
       res.status(201).json({ data, message: "User Deleted Successfully" });
     } else {
       res.status(404).json({ message: "User does not exists" });
-    }
-  } catch (err) {
-    throw err;
-  }
-};
-
-export const searchUser = async (req: Request, res: Response) => {
-  const query = String(req.query.query);
-  try {
-    const data = await searchUserService(query);
-    if (data.ok) {
-      res.status(201).json({ message: "Data fetched successfully", data });
-    } else {
-      res.status(404).json({ message: "Error in finding users", data });
     }
   } catch (err) {
     throw err;

@@ -4,7 +4,6 @@ import {
   deleteFromElastic,
   deleteUser,
   getUsers,
-  searchUser,
 } from "../controllers/userController";
 import multer from "multer";
 
@@ -16,7 +15,7 @@ const upload = multer({ storage: storage });
 router.get("/user", getUsers);
 router.post("/user", upload.single("file"), addUser);
 router.delete("/user/:id", deleteUser);
-router.get("/user/search", searchUser);
+// router.get("/user/search", searchUser);
 router.delete("/delete/:id", deleteFromElastic);
 
 export default router;

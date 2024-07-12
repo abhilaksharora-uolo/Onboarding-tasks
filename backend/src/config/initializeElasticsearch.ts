@@ -21,6 +21,23 @@ export async function createIndex() {
               email: {
                 type: "keyword",
               },
+              imageName: {
+                type: "text",
+                index: false,
+              },
+              hashedPassword: {
+                type: "text",
+                index: false,
+              },
+              isDeleted: {
+                type: "boolean",
+              },
+              mongoId: {
+                type: "keyword",
+              },
+              updatedAt: {
+                type: "date",
+              },
             },
           },
         },

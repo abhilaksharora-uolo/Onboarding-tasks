@@ -18,3 +18,5 @@ export const connectDb = async () => {
     console.log(err);
   }
 };
+
+export default mongoose;

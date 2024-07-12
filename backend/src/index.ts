@@ -2,8 +2,7 @@ import express, { Request, Response } from "express";
 import cors from "cors";
 import userRouter from "./routes/userRoutes";
 import { connectDb } from "./config/db";
-import { client } from "./config/elasticSearch";
-import { createIndex, deleteIndex } from "./config/initializeElasticsearch";
+import { createIndex } from "./config/initializeElasticsearch";
 
 const app = express();
 app.use(express.json());
@@ -21,13 +20,7 @@ app.use((err: Error, req: Request, res: Response, next: any) => {
   res.status(500).send("Backend not responding");
 });
 
-createIndex()
-  .then(() => {
-    console.log('Elasticsearch index "users" created successfully');
-  })
-  .catch((error) => {
-    console.error("Error creating Elasticsearch index:", error);
-  });
+createIndex();
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");
