@@ -8,6 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import styled from "styled-components";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import { debounce } from "../utils/debounce";
 
 const TeamMain = styled.div`
   display: flex;
@@ -173,9 +174,9 @@ const Users = () => {
       toast.error(err);
     }
   };
-
+  const debouncedFetchUsers = debounce(fetchUsers, 200);
   useEffect(() => {
-    fetchUsers();
+    debouncedFetchUsers();
   }, [limit, page, searchText]);
 
   const handleDelete = async (id) => {
@@ -212,7 +213,7 @@ const Users = () => {
     if (e.target.value !== searchText) setPage(1);
     if (e.target.value === "") setSearchText("");
     setSearchText(e.target.value);
-    fetchUsers({ q: e.target.value });
+    debouncedFetchUsers({ q: e.target.value });
   };
 
   const handlePrev = () => {

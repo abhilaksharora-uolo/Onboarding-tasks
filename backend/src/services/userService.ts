@@ -1,5 +1,4 @@
 import { getObjectSignedUrl, uploadFile } from "../controllers/imageController";
-import userModel from "../model/userModel";
 import bcrypt from "bcryptjs";
 import {
   createNewUserHandler,
@@ -16,7 +15,6 @@ import {
 } from "../utils/elasticHandler";
 import { searchById } from "../utils/elasticOperations";
 import { client } from "../config/initializeElasticsearch";
-import { query } from "express";
 
 // interface User {
 //   name: string;
