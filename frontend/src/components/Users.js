@@ -181,6 +181,7 @@ const Users = () => {
 
   const handleDelete = async (id) => {
     try {
+      console.log(id)
       const res = await deleteUser(id);
       if (res.data.ok) {
         fetchUsers();

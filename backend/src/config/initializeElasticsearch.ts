@@ -10,7 +10,7 @@ export async function createIndex() {
 
     if (!indexExists) {
       await client.indices.create({
-        index: "users",
+        index: "abhilaksh_users2",
         body: {
           mappings: {
             properties: {

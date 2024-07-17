@@ -19,7 +19,7 @@ interface UserHit {
 export const searchByEmail = async (email: string) => {
   try {
     const body = await client.search<UserHit>({
-      index: "users",
+      index: "abhilaksh_users2",
       body: {
         query: {
           term: { email: email },
@@ -62,7 +62,7 @@ export const userUpdateElastic = async (
 ) => {
   try {
     return await client.update({
-      index: "users",
+      index: "abhilaksh_users2",
       id: elasticId,
       body: {
         doc: {
@@ -89,7 +89,7 @@ export const createIndex = async (
 ) => {
   try {
     return await client.index({
-      index: "users",
+      index: "abhilaksh_users2",
       body: {
         name,
         email,
@@ -108,7 +108,7 @@ export const createIndex = async (
 export const searchById = async (id: string): Promise<any> => {
   try {
     const body = await client.search<UserHit>({
-      index: "users",
+      index: "abhilaksh_users2",
       body: {
         query: {
           match: { mongoId: id },
@@ -130,7 +130,7 @@ export const searchById = async (id: string): Promise<any> => {
 export const deleteUser = async (elasticId: string) => {
   try {
     return await client.update({
-      index: "users",
+      index: "abhilaksh_users2",
       id: elasticId,
       refresh: true,
       body: {
@@ -159,19 +159,18 @@ export const getUsersService = async (
     if (query) {
       baseQuery.bool.should = [
         {
-          multi_match: {
-            query: query,
-            fields: ["name", "email"],
-            type: "best_fields",
-            fuzziness: "AUTO",
-            operator: "OR",
+          wildcard: {
+            name: {
+              value: `*${query}*`,
+              boost: 1.0,
+            },
           },
         },
         {
-          match_phrase_prefix: {
-            name: {
-              query: query,
-              slop: 10,
+          wildcard: {
+            email: {
+              value: `*${query}*`,
+              boost: 1.0,
             },
           },
         },
@@ -182,7 +181,7 @@ export const getUsersService = async (
     }
 
     const body: any = await client.search({
-      index: "users",
+      index: "abhilaksh_users2",
       body: {
         query: baseQuery,
         from: from,

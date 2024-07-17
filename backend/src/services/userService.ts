@@ -148,9 +148,9 @@ export const getUserService = async (query: GetPageQuery) => {
       user.imageUrl = await getObjectSignedUrl(user.imageName);
     }
 
-    if (body.userCount === 0) {
-      return { ok: true, res: [], message: "No users found" };
-    }
+    // if (body.userCount === 0) {
+    //   return { ok: true, res: [], message: "No users found" };
+    // }
 
     return {
       ok: true,
@@ -200,7 +200,7 @@ export const deleteUserFromElastic = async (params: DeleteUserParams) => {
   const id: string = params.id;
   try {
     const body = await client.delete({
-      index: "users",
+      index: "abhilaksh_users2",
       id: id,
     });
     return {

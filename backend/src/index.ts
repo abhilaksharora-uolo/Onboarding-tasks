@@ -3,6 +3,7 @@ import cors from "cors";
 import userRouter from "./routes/userRoutes";
 import { connectDb } from "./config/db";
 import { createIndex } from "./config/initializeElasticsearch";
+import { bulkIndex } from "./utils/bulkIndexer";
 
 const app = express();
 app.use(express.json());
@@ -21,6 +22,7 @@ app.use((err: Error, req: Request, res: Response, next: any) => {
 });
 
 createIndex();
+// bulkIndex().catch(console.error);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World");

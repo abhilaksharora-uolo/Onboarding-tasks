@@ -61,6 +61,7 @@ const ProfileContent = styled.div`
 `;
 
 const Profile = ({ user, onDelete }) => {
+  console.log(user)
   return (
     <div>
       <Toaster />

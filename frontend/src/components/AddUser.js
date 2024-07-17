@@ -344,7 +344,12 @@ const AddUser = () => {
                         type="text"
                         value={name}
                         placeholder="Enter full name"
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => {
+                          let value = e.target.value;
+                          value = value.replace(/[^a-zA-Z ]/g, "");
+                          value = value.replace(/\s+/g, " ");
+                          setName(value);
+                        }}
                       />
                     </AddInput>
                     <AddInput>
