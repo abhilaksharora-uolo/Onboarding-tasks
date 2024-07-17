@@ -61,6 +61,7 @@ const ProfileContent = styled.div`
 `;
 
 const Profile = ({ user, onDelete }) => {
+  console.log(user)
   return (
     <div>
       <Toaster />
@@ -68,7 +69,7 @@ const Profile = ({ user, onDelete }) => {
         <ProfileImg src={user.imageUrl} alt="User" />
         <DeleteButton
           className="delete-btn"
-          onClick={(e) => onDelete(user._id)}
+          onClick={(e) => onDelete(user.mongoId)}
         >
           <Delete />
         </DeleteButton>

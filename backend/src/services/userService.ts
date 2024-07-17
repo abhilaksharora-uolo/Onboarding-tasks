@@ -1,19 +1,48 @@
 import { getObjectSignedUrl, uploadFile } from "../controllers/imageController";
-import userModel from "../model/userModel";
 import bcrypt from "bcryptjs";
+import {
+  createNewUserHandler,
+  deleteUserHandler,
+  updateUserHandler,
+} from "../utils/dbHandler";
+import {
+  createIndexHandler,
+  deleteUserElasticHandler,
+  getAllUsersHandler,
+  searchByEmailHandler,
+  searchByIdHandler,
+  userUpdateElasticHandler,
+} from "../utils/elasticHandler";
+import { searchById } from "../utils/elasticOperations";
+import { client } from "../config/initializeElasticsearch";
 
-interface User {
-  name: string;
-  email: string;
-  hashedPassword: string;
-  id: string;
-  imageName: string;
-  imageUrl?: string;
-}
+// interface User {
+//   name: string;
+//   email: string;
+//   hashedPassword: string;
+//   imageName: string;
+// }
+
+// interface UserHit {
+//   isDeleted: boolean;
+//   _id: string;
+//   imageUrl: string;
+//   imageName: string;
+//   _source: {
+//     name: string;
+//     email: string;
+//     hashedPassword: string;
+//     imageName: string;
+//     mongoId: string;
+//     isDeleted?: boolean;
+//     updatedAt: Date;
+//   };
+// }
 
 interface GetPageQuery {
   page?: number;
   limit?: number;
+  q?: string;
 }
 
 interface DeleteUserParams {
@@ -27,9 +56,41 @@ export const addUserService = async (
   file: Express.Multer.File
 ) => {
   try {
-    const userFind = await userModel.findOne({ email });
-    if (userFind && !userFind.isDeleted) {
-      return { ok: true, error: "User already exists" };
+    const body = await searchByEmailHandler(email);
+
+    if (body?.existingUserActive) {
+      return {
+        ok: false,
+        message: "User with this email already exists and is active.",
+      };
+    } else if (!body?.existingUserActive && body?.isDeleted) {
+      const imageName = Date.now().toString();
+      if (file) {
+        await uploadFile(
+          file.buffer,
+          `${imageName}${file.originalname}`,
+          file.mimetype
+        );
+      }
+      const img = `${imageName}${file.originalname}`;
+      const hashedPassword = await bcrypt.hash(password, 8);
+
+      await userUpdateElasticHandler(
+        body.elasticId,
+        name,
+        email,
+        hashedPassword,
+        img
+      );
+
+      const userUpdated = await updateUserHandler(
+        body.mongoId,
+        name,
+        email,
+        hashedPassword,
+        img
+      );
+      return { ok: true, userUpdated };
     }
     const imageName = Date.now().toString();
     if (file) {
@@ -42,26 +103,24 @@ export const addUserService = async (
     const img = `${imageName}${file.originalname}`;
     const hashedPassword = await bcrypt.hash(password, 8);
 
-    if (userFind?.isDeleted) {
-      const userUpdated = await userModel.findByIdAndUpdate(userFind.id, {
+    const user = await createNewUserHandler(name, email, hashedPassword, img);
+
+    if (user && user._id && user.updatedAt) {
+      const mongoId = user._id.toString();
+      const updatedAt = user.updatedAt;
+
+      const body = await createIndexHandler(
         name,
         email,
         hashedPassword,
-        imageName: img,
-        isDeleted: false,
-      });
-      return { ok: true, userUpdated };
+        img,
+        mongoId,
+        updatedAt
+      );
     }
-
-    const user = await userModel.create({
-      name,
-      email,
-      hashedPassword,
-      imageName: img,
-    });
-
     return { ok: true, user };
   } catch (err) {
+   
     return { ok: false, message: (err as Error).message };
   }
 };
@@ -70,25 +129,34 @@ export const getUserService = async (query: GetPageQuery) => {
   try {
     const page: number = Number(query.page) || 1;
     const limit: number = Number(query.limit) || 8;
-    const startIndex: number = (page - 1) * limit;
-    const len = await userModel.collection.countDocuments({ isDeleted: false });
-    const totalPages: number = Math.ceil(len / limit);
-    const res = await userModel
-      .find({ isDeleted: false })
-      .sort({ updatedAt: 1 })
-      .skip(startIndex)
-      .limit(limit);
+    const searchQuery = (query.q as string) || "";
+
+    const body: any = await getAllUsersHandler(searchQuery, page, limit);
+
+    if (body.userCount === 0) {
+      return { ok: true, res: [], message: "No users found" };
+    }
+
+    const totalPages: number = Math.ceil(body.userCount / limit);
+
+    const res = body.body.hits.hits.map((hit: any) => ({
+      _id: hit._id,
+      ...hit._source,
+    }));
 
     for (const user of res) {
       user.imageUrl = await getObjectSignedUrl(user.imageName);
     }
 
+    // if (body.userCount === 0) {
+    //   return { ok: true, res: [], message: "No users found" };
+    // }
+
     return {
       ok: true,
       res,
       totalPages,
-      message:
-        res.length <= 0 ? "No users found" : "Users fetched successfully",
+      message: "Users fetched successfully",
     };
   } catch (err) {
     return { ok: false, message: (err as Error).message };
@@ -97,15 +165,50 @@ export const getUserService = async (query: GetPageQuery) => {
 
 export const deleteUserService = async (params: DeleteUserParams) => {
   const id: string = params.id;
-  const user = await userModel.findByIdAndUpdate(id, { isDeleted: true });
+
+  const userHit = await searchById(id);
+
+  if (!userHit) {
+    return {
+      ok: false,
+      message: "User does not exist",
+    };
+  }
+
+  const elasticId = userHit._id;
+
+  if (elasticId) {
+    await deleteUserElasticHandler(elasticId);
+  }
+
+  const user = await deleteUserHandler(id);
+
   if (!user) {
     return {
       ok: false,
-      message: "User does not exists",
+      message: "User does not exist",
     };
   }
+
   return {
     ok: true,
     message: "User deleted successfully",
   };
+};
+
+export const deleteUserFromElastic = async (params: DeleteUserParams) => {
+  const id: string = params.id;
+  try {
+    const body = await client.delete({
+      index: "abhilaksh_users2",
+      id: id,
+    });
+    return {
+      ok: true,
+      message: "User deleted successfully",
+    };
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };

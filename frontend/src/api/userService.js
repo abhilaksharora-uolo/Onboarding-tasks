@@ -12,15 +12,19 @@ export const addUser = async (formData) => {
     return res.data;
   } catch (err) {
     console.log(err);
+    return { data: { ok: false, res: [] } };
   }
 };
 
-export const getUsers = async (page, limit) => {
+export const getUsers = async (searchText, page, limit) => {
   try {
-    const res = await axios.get(`${API_URL}/?page=${page}&limit=${limit}`);
+    const res = await axios.get(
+      `${API_URL}/?q=${searchText}&page=${page}&limit=${limit}`
+    );
     return res.data;
   } catch (err) {
     console.log(err);
+    return { data: { ok: false, res: [] } };
   }
 };
 
@@ -30,5 +34,6 @@ export const deleteUser = async (id) => {
     return res.data;
   } catch (err) {
     console.log(err);
+    return { data: { ok: false, res: [] } };
   }
 };

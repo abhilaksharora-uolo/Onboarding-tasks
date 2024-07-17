@@ -8,6 +8,7 @@ export interface IUser extends Document {
   imageName: string;
   imageUrl?: string;
   isDeleted: boolean;
+  updatedAt: Date;
 }
 
 const UserSchema: Schema = new Schema({
@@ -28,4 +29,4 @@ const UserSchema: Schema = new Schema({
 
 UserSchema.set("timestamps", true);
 
-export default mongoose.model<IUser>("user", UserSchema);
+export default mongoose.model<IUser>("users1", UserSchema);

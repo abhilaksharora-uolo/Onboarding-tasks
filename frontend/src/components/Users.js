@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { deleteUser, getUsers } from "../api/userService";
+import { deleteUser, getUsers, searchUser } from "../api/userService";
 import Search from "../utils/svg/Search";
 import LeftArrow from "../utils/svg/LeftArrow";
 import RightArrow from "../utils/svg/RightArrow";
@@ -8,6 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import styled from "styled-components";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
+import { debounce } from "../utils/debounce";
 
 const TeamMain = styled.div`
   display: flex;
@@ -49,6 +50,10 @@ const SearchInput = styled.input`
   padding: 0 15px;
   font-size: 16px;
   color: #98a2b3;
+
+  &:focus {
+    outline: none;
+  }
 `;
 
 const SearchButton = styled.button`
@@ -154,10 +159,11 @@ const Users = () => {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit, setLimit] = useState(8);
+  const [searchText, setSearchText] = useState("");
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (q) => {
     try {
-      const res = await getUsers(page, limit);
+      const res = await getUsers(searchText, page, limit);
       if (res.data.ok) {
         setUsers(res.data.res);
         setTotalPages(res.data.totalPages);
@@ -168,13 +174,14 @@ const Users = () => {
       toast.error(err);
     }
   };
-
+  const debouncedFetchUsers = debounce(fetchUsers, 200);
   useEffect(() => {
-    fetchUsers();
-  }, [limit, page]);
+    debouncedFetchUsers();
+  }, [limit, page, searchText]);
 
   const handleDelete = async (id) => {
     try {
+      console.log(id)
       const res = await deleteUser(id);
       if (res.data.ok) {
         fetchUsers();
@@ -201,6 +208,13 @@ const Users = () => {
       );
     }
     return buttons;
+  };
+
+  const handleInputChange = async (e) => {
+    if (e.target.value !== searchText) setPage(1);
+    if (e.target.value === "") setSearchText("");
+    setSearchText(e.target.value);
+    debouncedFetchUsers({ q: e.target.value });
   };
 
   const handlePrev = () => {
@@ -234,9 +248,18 @@ const Users = () => {
                   <Search />
                   <SearchInput
                     type="text"
+                    onChange={(e) => {
+                      handleInputChange(e);
+                    }}
                     placeholder="Search by Name, or Email id"
                   />
-                  <SearchButton>Search</SearchButton>
+                  <SearchButton
+                    onClick={() => {
+                      fetchUsers();
+                    }}
+                  >
+                    Search
+                  </SearchButton>
                 </SearchD>
 
                 <TeamContent>
