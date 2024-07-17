@@ -156,7 +156,7 @@ export const getUsersService = async (
       },
     };
 
-    if (query) {
+    if (query !== " ") {
       baseQuery.bool.should = [
         {
           wildcard: {
