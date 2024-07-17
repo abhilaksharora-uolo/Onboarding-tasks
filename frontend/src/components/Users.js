@@ -20,6 +20,10 @@ const Team = styled.div`
   flex-direction: column;
   margin: 50px auto;
   padding: 10px;
+
+  @media (max-width: 1024px) {
+    margin-top: 200px;
+  }
 `;
 
 const TeamTitle = styled.h3`
@@ -28,6 +32,10 @@ const TeamTitle = styled.h3`
   text-align: center;
   margin: 0;
   font-family: Outfit;
+
+  @media (max-width: 1024px) {
+    font-size: 100px;
+  }
 `;
 
 const SearchD = styled.div`
@@ -146,6 +154,10 @@ const SideLeft = styled.div`
   width: 17%;
   height: 130vh;
   position: sticky;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
 `;
 
 const SideRight = styled.div`
@@ -181,7 +193,7 @@ const Users = () => {
 
   const handleDelete = async (id) => {
     try {
-      console.log(id)
+      console.log(id);
       const res = await deleteUser(id);
       if (res.data.ok) {
         fetchUsers();

@@ -18,7 +18,7 @@ interface UserHit {
 
 export const searchByEmail = async (email: string) => {
   try {
-    console.log(email)
+    console.log(email);
     const body = await client.search<UserHit>({
       index: "abhilaksh_users2",
       body: {
@@ -27,7 +27,7 @@ export const searchByEmail = async (email: string) => {
         },
       },
     });
-    console.log(body)
+    console.log(body);
     const hits = body?.hits?.hits || [];
     const userCount = hits.length;
     let elasticId: string = "";
@@ -158,7 +158,7 @@ export const getUsersService = async (
       },
     };
 
-    if (query) {
+    if (query !== " ") {
       baseQuery.bool.should = [
         {
           wildcard: {

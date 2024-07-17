@@ -11,7 +11,7 @@ const HeaderMain = styled.div`
   background-color: #ffffff;
 
   @media (max-width: 1024px) {
-    height: 250px;
+    height: 200px;
   }
 `;
 
@@ -21,6 +21,11 @@ const HeaderFlex = styled.div`
   justify-content: space-between;
   align-items: center;
   margin: 0 20px;
+
+  @media (max-width: 1024px) {
+    align-items: center;
+    height: 200px;
+  }
 `;
 
 const HeaderP = styled.p`
@@ -41,8 +46,8 @@ const Logo = styled.img`
   width: 70px;
   height: 24px;
   @media (max-width: 1024px) {
-    height: 96px;
-    width: 196px;
+    height: 32px;
+    width: 95px;
   }
 `;
 
@@ -53,21 +58,25 @@ const Flex = styled.div`
   align-items: center;
 
   @media (max-width: 1024px) {
-    display none;
+    display: none;
   }
 `;
 
 const Ham = styled.div`
-
-@media (min-width: 1024px) {
-    display none;
+  @media (min-width: 1024px) {
+    display: none;
   }
 `;
 
 const Account = styled.div`
-@media (min-width: 1024px) {
-    display none;
+  @media (min-width: 1024px) {
+    display: none;
   }
+`;
+
+const Hamimg = styled.img`
+  width: 100px;
+  height: 100px;
 `;
 
 const Header = () => {
@@ -75,14 +84,12 @@ const Header = () => {
     <HeaderMain>
       <HeaderFlex>
         <Ham>
-          <img
-            width="50"
-            height="50"
-            src="https://img.icons8.com/ios-filled/50/menu--v6.png"
+          <Hamimg
+            src="https://img.icons8.com/ios-filled/132/menu--v6.png"
             alt="menu--v6"
           />
         </Ham>
-        <Logo src="images/vector.png" alt="" />
+        <img src="images/vector.png" alt="" />
         <Flex>
           <Avataar src="images/G_Avator_1.png" alt="" />
           <HeaderP>Abhilaksh</HeaderP>
@@ -90,8 +97,8 @@ const Header = () => {
         </Flex>
         <Account>
           <svg
-            width="24"
-            height="24"
+            width="132px"
+            height="132px"
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
