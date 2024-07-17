@@ -18,14 +18,16 @@ interface UserHit {
 
 export const searchByEmail = async (email: string) => {
   try {
+    console.log(email)
     const body = await client.search<UserHit>({
       index: "abhilaksh_users2",
       body: {
         query: {
-          term: { email: email },
+          term: { email: "vaibhav@gmail.com" },
         },
       },
     });
+    console.log(body)
     const hits = body?.hits?.hits || [];
     const userCount = hits.length;
     let elasticId: string = "";

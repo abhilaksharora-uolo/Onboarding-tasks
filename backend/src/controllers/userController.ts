@@ -4,6 +4,7 @@ import {
   deleteUserFromElastic,
   deleteUserService,
   getUserService,
+  loginUserService,
 } from "../services/userService";
 import { IUser } from "../model/userModel";
 import { client } from "../config/initializeElasticsearch";
@@ -69,6 +70,25 @@ export const deleteFromElastic = async (req: Request, res: Response) => {
       res.status(201).json({ data, message: "User Deleted Successfully" });
     } else {
       res.status(404).json({ message: "User does not exists" });
+    }
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const loginUser = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    console.log(email);
+    if (!(email && password)) {
+      res.status(404).json({ message: "All fields are required" });
+      return;
+    }
+    const data = await loginUserService(email, password);
+    if (data.ok) {
+      res.status(201).json({ data, message: "Logged in successfully" });
+    } else {
+      res.status(404).json({ message: "Incorrect credentials" });
     }
   } catch (err) {
     throw err;

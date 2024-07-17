@@ -57,7 +57,7 @@ export const addUserService = async (
 ) => {
   try {
     const body = await searchByEmailHandler(email);
-
+    console.log(body, "Abhi");
     if (body?.existingUserActive) {
       return {
         ok: false,
@@ -120,7 +120,6 @@ export const addUserService = async (
     }
     return { ok: true, user };
   } catch (err) {
-   
     return { ok: false, message: (err as Error).message };
   }
 };
@@ -194,6 +193,20 @@ export const deleteUserService = async (params: DeleteUserParams) => {
     ok: true,
     message: "User deleted successfully",
   };
+};
+
+export const loginUserService = async (email: string, password: string) => {
+  try {
+    const body = await searchByEmailHandler("abhi@gmail.com");
+    console.log(body);
+    return {
+      ok: true,
+      message: "user found",
+    };
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 };
 
 export const deleteUserFromElastic = async (params: DeleteUserParams) => {
