@@ -3,9 +3,8 @@ import { addUser } from "../api/userService";
 import toast, { Toaster } from "react-hot-toast";
 import ImageUpload from "../utils/svg/ImageUpload";
 import styled from "styled-components";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
 import Delete from "../utils/svg/Delete";
+import SuccessModal from "./SuccessModal";
 
 const MainContainer = styled.div`
   background: #f6f6f6;
@@ -13,52 +12,77 @@ const MainContainer = styled.div`
   flex-direction: row;
   z-index: 98;
   font-family: "Open Sans";
+  width: 100%;
+  margin: 20px auto;
+  @media (max-width: 1024px) {
+    background: #ffffff;
+  }
 `;
 
 const AddUserContainer = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;
-  margin: 50px auto;
-  height: 900px;
+  height: 125vh;
+  margin: 20px auto 0px;
+  @media (max-width: 1024px) {
+    height: 100vh;
+  }
+`;
+
+const AddUserInnerContainer = styled.div`
+  margin: 0px auto;
 `;
 
 const AddInput = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: start;
   margin: 10px 0;
+
+  @media (max-width: 1024px) {
+    margin: 20px 0;
+  }
 `;
 
 const Title = styled.h1`
   font-family: Outfit;
   font-size: 32px;
   font-weight: 700;
-  line-height: 40.32px;
-  letter-spacing: 0.25px;
-  text-align: left;
+  text-align: center;
   color: #101828;
 `;
 
 const Card = styled.div`
   background: #ffffff;
   border: 2px solid #eaecf0;
-  width: 460px;
+  // width: 460px;
   padding: 32px;
   border-radius: 20px 20px 0 0;
+
+  @media (max-width: 1024px) {
+    margin: 20px 0;
+    border: none;
+    // width: 328px;
+    padding: 0px;
+  }
 `;
 
 const CardItems = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  margin: 0 auto;
+  width: max-content;
+
+  @media (max-width: 1024px) {
+    // margin-left: 30px;
+  }
 `;
 
 const CardItemsPara = styled.p`
   font-family: "Open Sans";
   font-size: 12px;
   font-weight: 400;
-  line-height: 16.34px;
-  letter-spacing: 0.4000000059604645px;
   text-align: left;
   margin: 0;
   color: #667085;
@@ -74,6 +98,10 @@ const CardLabel = styled.label`
     content: " *";
     color: red;
   }
+
+  @media (max-width: 1024px) {
+    font-size: 18px;
+  }
 `;
 
 const CardInput = styled.input`
@@ -82,14 +110,25 @@ const CardInput = styled.input`
   border: 1px solid #d0d5dd;
   background: #ffffff;
   font-family: "Open Sans";
+  height: 20px;
+  width: 430px;
+
+  @media (max-width: 1024px) {
+    height: 32px;
+    width: 336px;
+  }
 `;
 
 const CardFooter = styled.div`
-  width: 460px;
   padding: 16px 32px;
   border-radius: 0 0 12px 12px;
   background: #ffffff;
   box-shadow: 0px -1px 2px 0px #00000014;
+  @media (max-width: 1024px) {
+    height: 32px;
+    width: 336px;
+    box-shadow: none;
+  }
 `;
 
 const CardButton = styled.button`
@@ -102,6 +141,10 @@ const CardButton = styled.button`
   background: ${({ active }) => (active ? "#561fe7" : "#98a2b3")};
   color: white;
   cursor: ${({ active }) => (active ? "pointer" : "not-allowed")};
+
+  @media (max-width: 1024px) {
+    height: 44px;
+  }
 `;
 
 const CardButtonCancel = styled.button`
@@ -132,54 +175,9 @@ const ImageInput = styled.input`
   display: none;
 `;
 
-const ModalMain = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 99;
-`;
-
-const Modal = styled.div`
-  width: 400px;
-  height: 224px;
-  background-color: #ffffff;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-`;
-
-const ModalImg = styled.img`
-  width: 80px;
-  height: 80px;
-`;
-
 const MainFlex = styled.div`
   display: flex;
   flex-direction: row;
-`;
-
-const SideLeft = styled.div`
-  overflow: hidden;
-  padding: 16px 0px;
-  box-shadow: 2px 0 3px -1px rgba(0, 0, 0, 0.1);
-  width: 17%;
-  height: 130vh;
-  position: sticky;
-`;
-
-const SideRight = styled.div`
-  width: 83%;
-  padding-top: 50px;
-  height: max-content;
 `;
 
 const ImagePrev = styled.img`
@@ -298,14 +296,10 @@ const AddUser = () => {
     <div>
       <Toaster />
       <div>
-        <Header />
         <MainFlex>
-          <SideLeft>
-            <Sidebar activeItem={2} />
-          </SideLeft>
-          <SideRight>
-            <MainContainer>
-              <AddUserContainer>
+          <MainContainer>
+            <AddUserContainer className="abc">
+              <AddUserInnerContainer>
                 <Title>Create Profile</Title>
                 <Card>
                   <CardItems>
@@ -381,36 +375,30 @@ const AddUser = () => {
                     </AddInput>
                   </CardItems>
                 </Card>
-                <CardFooter>
-                  <CardFooterItems>
-                    <CardButtonCancel onClick={handleCancel}>
-                      Cancel
-                    </CardButtonCancel>
-                    <CardButton
-                      disabled={!isActive}
-                      active={isActive}
-                      onClick={handleSubmit}
-                    >
-                      Save
-                    </CardButton>
-                  </CardFooterItems>
-                </CardFooter>
-              </AddUserContainer>
-            </MainContainer>
-          </SideRight>
+              </AddUserInnerContainer>
+              <CardFooter>
+                <CardFooterItems>
+                  <CardButtonCancel onClick={handleCancel}>
+                    Cancel
+                  </CardButtonCancel>
+                  <CardButton
+                    disabled={!isActive}
+                    active={isActive}
+                    onClick={handleSubmit}
+                  >
+                    Save
+                  </CardButton>
+                </CardFooterItems>
+              </CardFooter>
+            </AddUserContainer>
+          </MainContainer>
         </MainFlex>
       </div>
 
       {modal ? (
-        <ModalMain>
-          <Modal>
-            <ModalImg
-              src="https://s3-alpha-sig.figma.com/img/afe4/9163/c8cd31c37cf6a026d0c095699cebe9f2?Expires=1721606400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=jrKqvYqN-t2z4xSd7fs3LeNhnCFNO34HGGFE8SY3iRpDRxnMnbAYsPo6gTClKlXmxnnrbU9t71XouNw0oqGNCm7c0oNOU-lhk3F3MNT804xV32goNImV-wzzyzpyktvek~4HUEpLP5ncMqWNIq8DB5zOCpQLDHeOFdZDZkeS4jGP8hkQi8LAgPo3tptQtD9Dkqc2esQ2B0nwtVeodlL2-eURil~3NGLdQM92EqRzV3-wqkM-JVW-lwTonswABLP9FffKT2mzDitT0nBlHdee1aZSvzKjt32-WfftmJPnd48RZQL5KCUafSwpkVmYQ~kY4hRVE-1TpnY~8tTYxlVByw__"
-              alt="success"
-            />
-            <p>User has been successfully created</p>
-          </Modal>
-        </ModalMain>
+        <>
+          <SuccessModal text={"User has been successfully created"} />
+        </>
       ) : (
         <></>
       )}

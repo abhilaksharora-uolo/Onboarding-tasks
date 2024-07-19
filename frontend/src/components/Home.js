@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
-import Users from "./Users";
-import AddUser from "./AddUser";
 import styled from "styled-components";
+import { Outlet } from "react-router-dom";
 
 const MainFlex = styled.div`
   display: flex;
@@ -17,23 +16,34 @@ const SideLeft = styled.div`
   width: 17%;
   height: 130vh;
   position: sticky;
+
+  @media (max-width: 1024px) {
+    display: none;
+    width: 0%;
+  }
 `;
 
 const SideRight = styled.div`
   width: 83%;
   padding-top: 50px;
   height: max-content;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
 `;
 
 const Home = () => {
   return (
     <div>
       <Header />
-      <MainFlex>
+      <MainFlex className="hello">
         <SideLeft>
           <Sidebar />
         </SideLeft>
-        <SideRight></SideRight>
+        <SideRight className="hello2">
+          <Outlet />
+        </SideRight>
       </MainFlex>
     </div>
   );

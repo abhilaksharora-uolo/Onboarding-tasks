@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { loginUser } from "../api/userService";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../utils/AuthContext";
 
 const LoginImage = styled.div`
   @media (min-width: 1024px) {
@@ -144,16 +148,28 @@ const CardButton = styled.button`
 `;
 
 const Login = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login } = useAuth();
   const isActive = email && password;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const data = await loginUser(email, password);
+    console.log(data.data);
+    if (data.data.ok) {
+      login();
+      toast.success("Logged in successfully");
+      navigate("/");
+    } else {
+      toast.error("Invalid Credentials");
+    }
   };
 
   return (
     <div>
+      <Toaster />
       <Flex>
         <LoginImage>
           <LoginImageI src="images/image 550.png" alt="" />

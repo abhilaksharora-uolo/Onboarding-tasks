@@ -4,19 +4,24 @@ import {
   deleteFromElastic,
   deleteUser,
   getUsers,
+  loggedUser,
   loginUser,
 } from "../controllers/userController";
 import multer from "multer";
+import { checkUserAuth } from "../middleware/auth";
 
 const router: Router = express.Router();
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
+router.post("/user/login", loginUser);
+
+router.use(checkUserAuth);
 router.get("/user", getUsers);
 router.post("/user", upload.single("file"), addUser);
 router.delete("/user/:id", deleteUser);
 router.delete("/delete/:id", deleteFromElastic);
-router.post("/login", loginUser)
+router.get("/user/logged", loggedUser);
 
 export default router;

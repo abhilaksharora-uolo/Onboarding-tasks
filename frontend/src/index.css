@@ -7,8 +7,9 @@ body {
   font-family: "Outfit";
 }
 
-.input-login{
+.team{
   display: flex;
   flex-direction: column;
-  
+  justify-content: center;
+  align-items: center;
 }

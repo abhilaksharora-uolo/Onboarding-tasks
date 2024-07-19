@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import {
   createNewUserHandler,
   deleteUserHandler,
+  searchUserByEmailHandler,
   updateUserHandler,
 } from "../utils/dbHandler";
 import {
@@ -15,29 +16,24 @@ import {
 } from "../utils/elasticHandler";
 import { searchById } from "../utils/elasticOperations";
 import { client } from "../config/initializeElasticsearch";
+import "dotenv/config";
+import { signJWT } from "../utils/jwtOperations";
 
-// interface User {
-//   name: string;
-//   email: string;
-//   hashedPassword: string;
-//   imageName: string;
-// }
-
-// interface UserHit {
-//   isDeleted: boolean;
-//   _id: string;
-//   imageUrl: string;
-//   imageName: string;
-//   _source: {
-//     name: string;
-//     email: string;
-//     hashedPassword: string;
-//     imageName: string;
-//     mongoId: string;
-//     isDeleted?: boolean;
-//     updatedAt: Date;
-//   };
-// }
+interface UserHit {
+  isDeleted: boolean;
+  _id: string;
+  imageUrl: string;
+  imageName: string;
+  _source: {
+    name: string;
+    email: string;
+    hashedPassword: string;
+    imageName: string;
+    mongoId: string;
+    isDeleted?: boolean;
+    updatedAt: Date;
+  };
+}
 
 interface GetPageQuery {
   page?: number;
@@ -57,7 +53,6 @@ export const addUserService = async (
 ) => {
   try {
     const body = await searchByEmailHandler(email);
-    console.log(body, "Abhi");
     if (body?.existingUserActive) {
       return {
         ok: false,
@@ -131,7 +126,6 @@ export const getUserService = async (query: GetPageQuery) => {
     const searchQuery = (query.q as string) || "";
 
     const body: any = await getAllUsersHandler(searchQuery, page, limit);
-
     if (body.userCount === 0) {
       return { ok: true, res: [], message: "No users found" };
     }
@@ -146,10 +140,6 @@ export const getUserService = async (query: GetPageQuery) => {
     for (const user of res) {
       user.imageUrl = await getObjectSignedUrl(user.imageName);
     }
-
-    // if (body.userCount === 0) {
-    //   return { ok: true, res: [], message: "No users found" };
-    // }
 
     return {
       ok: true,
@@ -197,11 +187,38 @@ export const deleteUserService = async (params: DeleteUserParams) => {
 
 export const loginUserService = async (email: string, password: string) => {
   try {
-    const body = await searchByEmailHandler("abhi@gmail.com");
-    console.log(body);
+    const body = await searchUserByEmailHandler(email);
+    if (body === null) {
+      return {
+        ok: false,
+        message: "User does not exists",
+      };
+    }
+
+    const hashedPassword = body?.hashedPassword;
+
+    if (!hashedPassword) {
+      return {
+        ok: false,
+        message: "Password is not available",
+      };
+    }
+
+    const isPasswordCorrect = await bcrypt.compare(password, hashedPassword);
+
+    if (!isPasswordCorrect) {
+      return {
+        ok: false,
+        message: "Incorrect Credentials",
+      };
+    }
+
+    const token = signJWT(body.email, body._id as string);
+
     return {
       ok: true,
-      message: "user found",
+      token,
+      message: "User logged in",
     };
   } catch (err) {
     console.log(err);
@@ -213,7 +230,7 @@ export const deleteUserFromElastic = async (params: DeleteUserParams) => {
   const id: string = params.id;
   try {
     const body = await client.delete({
-      index: "abhilaksh_users2",
+      index: "abhilaksh_users3",
       id: id,
     });
     return {
@@ -224,4 +241,17 @@ export const deleteUserFromElastic = async (params: DeleteUserParams) => {
     console.error(error);
     throw error;
   }
+};
+
+export const getLoggedUserService = async (res: any) => {
+  try {
+    console.log(res, "RESSS");
+    res.imageUrl = await getObjectSignedUrl(res.imageName);
+    console.log(res, "RES");
+    return {
+      ok: true,
+      res,
+      message: "User fetched successfully",
+    };
+  } catch {}
 };

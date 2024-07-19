@@ -1,4 +1,9 @@
-import { createUser, deleteUser, updateUserById } from "./dbOperations";
+import {
+  createUser,
+  deleteUser,
+  searchUserByEmail,
+  updateUserById,
+} from "./dbOperations";
 
 export const createNewUserHandler = async (
   name: string,
@@ -30,6 +35,14 @@ export const updateUserHandler = async (
 export const deleteUserHandler = async (id: string) => {
   try {
     return await deleteUser(id);
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+export const searchUserByEmailHandler = async (email: string) => {
+  try {
+    return await searchUserByEmail(email);
   } catch (err) {
     console.log(err);
   }
