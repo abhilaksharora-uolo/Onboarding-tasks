@@ -4,11 +4,13 @@ import {
   deleteFromElastic,
   deleteUser,
   getUsers,
-  loggedUser,
-  loginUser,
 } from "../controllers/userController";
 import multer from "multer";
 import { checkUserAuth } from "../middleware/auth";
+import {
+  loggedUser,
+  loginUser
+} from "../controllers/authController";
 
 const router: Router = express.Router();
 

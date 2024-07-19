@@ -6,7 +6,6 @@ import Team2 from "../utils/svg/Team2";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import SuccessModal from "./SuccessModal";
-import { useAuth } from "../utils/AuthContext";
 import Logout from "../utils/svg/Logout";
 
 const SidebarD = styled.div`
@@ -126,7 +125,6 @@ const SidebarButton = styled.button`
 `;
 
 const Sidebar = ({ closeSidebar }) => {
-  const { logout } = useAuth();
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
   // eslint-disable-next-line no-restricted-globals
@@ -139,7 +137,10 @@ const Sidebar = ({ closeSidebar }) => {
   };
 
   const handleLogout = () => {
-    logout();
+    document.cookie =
+    "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("name");
+    localStorage.removeItem("imageUrl");
     setModal(true);
     setTimeout(() => {
       setModal(false);
@@ -194,9 +195,7 @@ const Sidebar = ({ closeSidebar }) => {
       </SidebarD>
       {modal ? (
         <>
-          <SuccessModal
-            text={"You have been successfully logout"}
-          />
+          <SuccessModal text={"You have been successfully logout"} />
         </>
       ) : (
         <></>

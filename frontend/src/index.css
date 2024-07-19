@@ -6,10 +6,3 @@ body {
   padding: 0;
   font-family: "Outfit";
 }
-
-.team{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}

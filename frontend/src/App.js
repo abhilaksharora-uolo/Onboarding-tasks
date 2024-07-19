@@ -5,7 +5,7 @@ import AddUser from "./components/AddUser";
 import Users from "./components/Users";
 import Login from "./components/Login";
 import PrivateRoute from "./utils/PrivateRoute";
-import { AuthProvider } from "./utils/AuthContext";
+import PublicRoute from "./utils/PublicRoute";
 
 const router = createBrowserRouter([
   {
@@ -18,16 +18,12 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />,
+    element: <PublicRoute element={<Login />} />,
   },
 ]);
 
 const App = () => {
-  return (
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;

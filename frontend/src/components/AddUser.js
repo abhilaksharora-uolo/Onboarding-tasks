@@ -10,7 +10,7 @@ const MainContainer = styled.div`
   background: #f6f6f6;
   display: flex;
   flex-direction: row;
-  z-index: 98;
+  z-index: 97;
   font-family: "Open Sans";
   width: 100%;
   margin: 20px auto;

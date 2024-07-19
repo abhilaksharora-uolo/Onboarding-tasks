@@ -3,11 +3,9 @@ import Down from "../utils/svg/Down";
 import styled from "styled-components";
 import Sidebar from "./Sidebar";
 import { useNavigate } from "react-router-dom";
-import { getLoggedUser } from "../api/userService";
-import toast from "react-hot-toast";
 import SuccessModal from "./SuccessModal";
-import { useAuth } from "../utils/AuthContext";
 import Account from "../utils/svg/Account";
+import removeCookie from "react-cookie";
 
 const HeaderMain = styled.div`
   box-shadow: 0 2px 3px -1px rgba(0, 0, 0, 0.1);
@@ -126,24 +124,18 @@ const DropdownButton = styled.button`
 
 const Header = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
   const [sidebar, setSidebar] = useState(false);
-  const [user, setUser] = useState();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [modal, setModal] = useState(false);
+  const [name, setName] = useState("Avataar");
+  const [imageUrl, setImageUrl] = useState("images/G_Avator_1.png");
 
   useEffect(() => {
-    fetchUser();
-  }, []);
-
-  const fetchUser = async () => {
-    const data = await getLoggedUser();
-    if (data.data.ok) {
-      setUser(data.data.res);
-    } else {
-      toast.error("Error in fetching user from database");
+    if (localStorage.getItem("name") && localStorage.getItem("imageUrl")) {
+      setName(localStorage.getItem("name"));
+      setImageUrl(localStorage.getItem("imageUrl"));
     }
-  };
+  }, []);
 
   const handleSidebar = async () => {
     setSidebar(!sidebar);
@@ -160,7 +152,9 @@ const Header = () => {
   };
 
   const handleLogout = () => {
-    logout();
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("name");
+    localStorage.removeItem("imageUrl");
     setDropdownOpen(false);
     navigate("/login");
   };
@@ -177,11 +171,8 @@ const Header = () => {
           </Ham>
           <Logo src="images/vector.png" alt="" />
           <Flex>
-            <Avataar
-              src={user ? user.imageUrl : "images/G_Avator_1.png"}
-              alt=""
-            />
-            <HeaderP>{user ? user.name : "Avataar"}</HeaderP>
+            <Avataar src={imageUrl} alt="" />
+            <HeaderP>{name}</HeaderP>
             <DropdownButton onClick={toggleDropdown}>
               <Down />
             </DropdownButton>
@@ -190,7 +181,7 @@ const Header = () => {
             </Dropdown>
           </Flex>
           <AccountD>
-            <Account />
+            {imageUrl ? <Avataar src={imageUrl} alt="" /> : <Account />}
           </AccountD>
         </HeaderFlex>
       </HeaderMain>

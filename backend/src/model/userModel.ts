@@ -3,7 +3,7 @@ import mongoose, { Schema, Document } from "mongoose";
 export interface IUser extends Document {
   name: string;
   email: string;
-  hashedPassword: string;
+  hashedPassword?: string;
   id: string;
   imageName: string;
   imageUrl?: string;
@@ -16,7 +16,6 @@ const UserSchema: Schema = new Schema({
   email: { type: String, required: true, message: "Email is required" },
   hashedPassword: {
     type: String,
-    required: true,
     message: "Password is required",
   },
   imageName: { type: String, required: true, message: "Image is required" },
