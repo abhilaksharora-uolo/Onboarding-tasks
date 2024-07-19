@@ -137,8 +137,7 @@ const Sidebar = ({ closeSidebar }) => {
   };
 
   const handleLogout = () => {
-    document.cookie =
-    "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     localStorage.removeItem("name");
     localStorage.removeItem("imageUrl");
     setModal(true);

@@ -55,14 +55,12 @@ const Title = styled.h1`
 const Card = styled.div`
   background: #ffffff;
   border: 2px solid #eaecf0;
-  // width: 460px;
   padding: 32px;
   border-radius: 20px 20px 0 0;
 
   @media (max-width: 1024px) {
     margin: 20px 0;
     border: none;
-    // width: 328px;
     padding: 0px;
   }
 `;
@@ -73,10 +71,6 @@ const CardItems = styled.div`
   justify-content: center;
   margin: 0 auto;
   width: max-content;
-
-  @media (max-width: 1024px) {
-    // margin-left: 30px;
-  }
 `;
 
 const CardItemsPara = styled.p`

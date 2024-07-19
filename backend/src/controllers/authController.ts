@@ -5,13 +5,6 @@ import {
   loginUserService,
 } from "../services/authService";
 
-interface DataObject {
-  ok: boolean;
-  user?: IUser;
-  message?: string;
-  error?: string;
-}
-
 export const loginUser = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;

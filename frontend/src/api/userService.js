@@ -30,7 +30,6 @@ export const getUsers = async (searchText, page, limit) => {
         },
       }
     );
-    console.log(res);
     return res.data;
   } catch (err) {
     console.log(err);

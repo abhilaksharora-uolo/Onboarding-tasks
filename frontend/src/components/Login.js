@@ -167,9 +167,7 @@ const Login = () => {
       return;
     }
     const data = await loginUser(email, password);
-    console.log(data.data);
     if (data.data.ok) {
-      // login();
       localStorage.setItem("name", data.data.user.name);
       localStorage.setItem("imageUrl", data.data.user.imageUrl);
       toast.success("Logged in successfully");

@@ -116,7 +116,6 @@ export const searchById = async (id: string): Promise<any> => {
         },
       },
     });
-    console.log(body, "body");
     if (body?.hits?.hits.length > 0) {
       return body.hits.hits[0];
     } else {

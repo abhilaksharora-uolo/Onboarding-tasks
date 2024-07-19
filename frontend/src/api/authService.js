@@ -16,7 +16,6 @@ export const loginUser = async (email, password) => {
         withCredentials: true,
       }
     );
-    console.log(res);
     return res.data;
   } catch (err) {
     console.log(err);
@@ -32,7 +31,6 @@ export const getLoggedUser = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log(res);
     return res.data;
   } catch (err) {
     console.log(err);
