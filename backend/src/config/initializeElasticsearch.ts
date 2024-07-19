@@ -5,12 +5,12 @@ export const client = new Client({ node: "http://localhost:9200" });
 export async function createIndex() {
   try {
     const indexExists = await client.indices.exists({
-      index: "users",
+      index: "abhilaksh_users3",
     });
 
     if (!indexExists) {
       await client.indices.create({
-        index: "abhilaksh_users2",
+        index: "abhilaksh_users3",
         body: {
           mappings: {
             properties: {

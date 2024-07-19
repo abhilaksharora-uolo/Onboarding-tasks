@@ -1,22 +1,29 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import userRouter from "./routes/userRoutes";
 import { connectDb } from "./config/db";
 import { createIndex } from "./config/initializeElasticsearch";
 import { bulkIndex } from "./utils/bulkIndexer";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(express.json());
 
 const PORT = 1000;
 
-app.use(cors());
+const corsOptions = {
+  origin: "http://localhost:3000", // Replace with your frontend URL
+  credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+};
+
+app.use(cors(corsOptions));
+app.use(cookieParser());
 
 connectDb();
 
 app.use("/api/v1/", userRouter);
 
-app.use((err: Error, req: Request, res: Response, next: any) => {
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
   console.log(err.stack);
   res.status(500).send("Backend not responding");
 });

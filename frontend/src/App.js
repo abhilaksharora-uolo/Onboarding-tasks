@@ -1,18 +1,29 @@
 import React from "react";
 import Home from "./components/Home";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AddUser from "./components/AddUser";
 import Users from "./components/Users";
+import Login from "./components/Login";
+import PrivateRoute from "./utils/PrivateRoute";
+import PublicRoute from "./utils/PublicRoute";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <PrivateRoute element={<Home />} />,
+    children: [
+      { index: true, element: <PrivateRoute element={<Users />} /> },
+      { path: "/add-user", element: <PrivateRoute element={<AddUser />} /> },
+    ],
+  },
+  {
+    path: "/login",
+    element: <PublicRoute element={<Login />} />,
+  },
+]);
 
 const App = () => {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Users />} />
-        <Route path="/add-user" element={<AddUser />} />
-      </Routes>
-    </BrowserRouter>
-  );
+  return <RouterProvider router={router} />;
 };
 
 export default App;

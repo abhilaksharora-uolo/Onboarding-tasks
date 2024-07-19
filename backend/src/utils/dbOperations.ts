@@ -45,3 +45,11 @@ export const deleteUser = async (id: string) => {
     console.log(err);
   }
 };
+
+export const searchUserByEmail = async (email: string) => {
+  try {
+    return await userModel.findOne({ email: email });
+  } catch (err) {
+    console.log(err);
+  }
+};

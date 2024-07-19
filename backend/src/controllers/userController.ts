@@ -6,7 +6,6 @@ import {
   getUserService,
 } from "../services/userService";
 import { IUser } from "../model/userModel";
-import { client } from "../config/initializeElasticsearch";
 
 interface DataObject {
   ok: boolean;
@@ -39,6 +38,7 @@ export const addUser = async (req: Request, res: Response) => {
 export const getUsers = async (req: Request, res: Response) => {
   try {
     const data = await getUserService(req.query);
+    console.log(data);
     if (data.ok) {
       res.status(201).json({ message: "Data fetched successfully", data });
     } else {

@@ -6,7 +6,7 @@ const dbName = "onboarding-tasks";
 const collectionName = "users1";
 
 const esClient = new Client({ node: "http://localhost:9200" });
-const indexName = "abhilaksh_users2";
+const indexName = "abhilaksh_users3";
 
 export const bulkIndex = async () => {
   const mongoClient = new MongoClient(mongoUri);

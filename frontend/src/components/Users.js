@@ -9,10 +9,12 @@ import styled from "styled-components";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 import { debounce } from "../utils/debounce";
+import { useNavigate } from "react-router-dom";
 
 const TeamMain = styled.div`
   display: flex;
   flex-direction: row;
+  justify-content: center;
 `;
 
 const Team = styled.div`
@@ -20,6 +22,7 @@ const Team = styled.div`
   flex-direction: column;
   margin: 50px auto;
   padding: 10px;
+  width: 100%;
 `;
 
 const TeamTitle = styled.h3`
@@ -35,21 +38,26 @@ const SearchD = styled.div`
   border: 1px;
   border: 1px solid #d0d5dd;
   height: 48px;
-  width: 1152px;
+  width: 90%;
   display: flex;
   flex-direction: row;
   align-items: center;
   padding-left: 10px;
-  margin: 20px 0;
+  margin: 20px auto;
+
+  @media (max-width: 1024px) {
+    width: 90%;
+    justify-content: center;
+  }
 `;
 
 const SearchInput = styled.input`
   border: none;
-  width: 1152px;
   height: 46px;
   padding: 0 15px;
   font-size: 16px;
   color: #98a2b3;
+  width: 90%;
 
   &:focus {
     outline: none;
@@ -69,6 +77,7 @@ const SearchButton = styled.button`
 const TeamContent = styled.div`
   display: flex;
   flex-direction: column;
+  align-items: center;
   overflow: scroll;
 `;
 
@@ -134,10 +143,7 @@ const Limit = styled.select`
   height: 32px;
 `;
 
-const MainFlex = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
+const MainFlex = styled.div``;
 
 const SideLeft = styled.div`
   overflow: hidden;
@@ -146,12 +152,20 @@ const SideLeft = styled.div`
   width: 17%;
   height: 130vh;
   position: sticky;
+
+  @media (max-width: 1024px) {
+    width: 0%;
+  }
 `;
 
 const SideRight = styled.div`
   width: 83%;
   padding-top: 50px;
   height: max-content;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
 `;
 
 const Users = () => {
@@ -181,7 +195,7 @@ const Users = () => {
 
   const handleDelete = async (id) => {
     try {
-      console.log(id)
+      console.log(id);
       const res = await deleteUser(id);
       if (res.data.ok) {
         fetchUsers();
@@ -235,79 +249,70 @@ const Users = () => {
     <div>
       <Toaster />
       <div>
-        <Header />
-        <MainFlex>
-          <SideLeft>
-            <Sidebar activeItem={1} />
-          </SideLeft>
-          <SideRight>
-            <TeamMain>
-              <Team>
-                <TeamTitle>Our Team</TeamTitle>
-                <SearchD>
-                  <Search />
-                  <SearchInput
-                    type="text"
-                    onChange={(e) => {
-                      handleInputChange(e);
-                    }}
-                    placeholder="Search by Name, or Email id"
-                  />
-                  <SearchButton
-                    onClick={() => {
-                      fetchUsers();
-                    }}
-                  >
-                    Search
-                  </SearchButton>
-                </SearchD>
-
-                <TeamContent>
-                  {users.length > 0 ? (
-                    <>
-                      <TeamInnerComponent>
-                        {users.map((user, index) => {
-                          return (
-                            <div key={index}>
-                              <Profile user={user} onDelete={handleDelete} />
-                            </div>
-                          );
-                        })}
-                      </TeamInnerComponent>
-                      <Pagination>
-                        <ControlButton onClick={() => handlePrev()}>
-                          <LeftArrow />
-                        </ControlButton>
-                        {renderPageButtons()}
-                        <ControlButton onClick={() => handleNext()}>
-                          <RightArrow />
-                        </ControlButton>
-                        <div>
-                          <Limit onChange={(e) => handleLimit(e)} value={limit}>
-                            <option value={8}>Limit per page</option>
-                            <option value={8}>8</option>
-                            <option value={12}>12</option>
-                            <option value={16}>16</option>
-                            <option value={20}>20</option>
-                          </Limit>
+        <TeamMain>
+          <Team>
+            <TeamTitle>Our Team</TeamTitle>
+            <SearchD>
+              <Search />
+              <SearchInput
+                type="text"
+                onChange={(e) => {
+                  handleInputChange(e);
+                }}
+                placeholder="Search by Name, or Email id"
+              />
+              <SearchButton
+                onClick={() => {
+                  fetchUsers();
+                }}
+              >
+                Search
+              </SearchButton>
+            </SearchD>
+            <TeamContent>
+              {users.length > 0 ? (
+                <>
+                  <TeamInnerComponent>
+                    {users.map((user, index) => {
+                      return (
+                        <div key={index}>
+                          <Profile user={user} onDelete={handleDelete} />
                         </div>
-                      </Pagination>
-                    </>
-                  ) : (
-                    <NoData>
-                      <NoDataImg
-                        width="24"
-                        height="24"
-                        src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127829.jpg?t=st=1720024012~exp=1720027612~hmac=eecbbc5dd1c2c2fe883a1573412716a1e33c1ab9e3b1fa79e7a24ee4071aac61&w=1060"
-                        alt="no-data-availible"
-                      />
-                    </NoData>
-                  )}
-                </TeamContent>
-              </Team>
-            </TeamMain>
-          </SideRight>
-        </MainFlex>
+                      );
+                    })}
+                  </TeamInnerComponent>
+                  <Pagination>
+                    <ControlButton onClick={() => handlePrev()}>
+                      <LeftArrow />
+                    </ControlButton>
+                    {renderPageButtons()}
+                    <ControlButton onClick={() => handleNext()}>
+                      <RightArrow />
+                    </ControlButton>
+                    <div>
+                      <Limit onChange={(e) => handleLimit(e)} value={limit}>
+                        <option value={8}>Limit per page</option>
+                        <option value={8}>8</option>
+                        <option value={12}>12</option>
+                        <option value={16}>16</option>
+                        <option value={20}>20</option>
+                      </Limit>
+                    </div>
+                  </Pagination>
+                </>
+              ) : (
+                <NoData>
+                  <NoDataImg
+                    width="24"
+                    height="24"
+                    src="https://img.freepik.com/free-vector/hand-drawn-no-data-concept_52683-127829.jpg?t=st=1720024012~exp=1720027612~hmac=eecbbc5dd1c2c2fe883a1573412716a1e33c1ab9e3b1fa79e7a24ee4071aac61&w=1060"
+                    alt="no-data-availible"
+                  />
+                </NoData>
+              )}
+            </TeamContent>
+          </Team>
+        </TeamMain>
       </div>
     </div>
   );

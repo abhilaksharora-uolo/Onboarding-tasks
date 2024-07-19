@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs";
 import {
   createNewUserHandler,
   deleteUserHandler,
+  searchUserByEmailHandler,
   updateUserHandler,
 } from "../utils/dbHandler";
 import {
@@ -10,34 +11,28 @@ import {
   deleteUserElasticHandler,
   getAllUsersHandler,
   searchByEmailHandler,
-  searchByIdHandler,
   userUpdateElasticHandler,
 } from "../utils/elasticHandler";
 import { searchById } from "../utils/elasticOperations";
 import { client } from "../config/initializeElasticsearch";
+import "dotenv/config";
+import { signJWT } from "../utils/jwtOperations";
 
-// interface User {
-//   name: string;
-//   email: string;
-//   hashedPassword: string;
-//   imageName: string;
-// }
-
-// interface UserHit {
-//   isDeleted: boolean;
-//   _id: string;
-//   imageUrl: string;
-//   imageName: string;
-//   _source: {
-//     name: string;
-//     email: string;
-//     hashedPassword: string;
-//     imageName: string;
-//     mongoId: string;
-//     isDeleted?: boolean;
-//     updatedAt: Date;
-//   };
-// }
+interface UserHit {
+  isDeleted: boolean;
+  _id: string;
+  imageUrl: string;
+  imageName: string;
+  _source: {
+    name: string;
+    email: string;
+    hashedPassword: string;
+    imageName: string;
+    mongoId: string;
+    isDeleted?: boolean;
+    updatedAt: Date;
+  };
+}
 
 interface GetPageQuery {
   page?: number;
@@ -57,7 +52,6 @@ export const addUserService = async (
 ) => {
   try {
     const body = await searchByEmailHandler(email);
-
     if (body?.existingUserActive) {
       return {
         ok: false,
@@ -120,7 +114,6 @@ export const addUserService = async (
     }
     return { ok: true, user };
   } catch (err) {
-   
     return { ok: false, message: (err as Error).message };
   }
 };
@@ -132,7 +125,6 @@ export const getUserService = async (query: GetPageQuery) => {
     const searchQuery = (query.q as string) || "";
 
     const body: any = await getAllUsersHandler(searchQuery, page, limit);
-
     if (body.userCount === 0) {
       return { ok: true, res: [], message: "No users found" };
     }
@@ -147,10 +139,6 @@ export const getUserService = async (query: GetPageQuery) => {
     for (const user of res) {
       user.imageUrl = await getObjectSignedUrl(user.imageName);
     }
-
-    // if (body.userCount === 0) {
-    //   return { ok: true, res: [], message: "No users found" };
-    // }
 
     return {
       ok: true,
@@ -200,7 +188,7 @@ export const deleteUserFromElastic = async (params: DeleteUserParams) => {
   const id: string = params.id;
   try {
     const body = await client.delete({
-      index: "abhilaksh_users2",
+      index: "abhilaksh_users3",
       id: id,
     });
     return {

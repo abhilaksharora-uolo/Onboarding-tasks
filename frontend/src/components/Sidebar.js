@@ -1,26 +1,65 @@
-import React from "react";
+import React, { useState } from "react";
 import Create1 from "../utils/svg/Create1";
 import Create2 from "../utils/svg/Create2";
 import Team1 from "../utils/svg/Team1";
 import Team2 from "../utils/svg/Team2";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import SuccessModal from "./SuccessModal";
+import Logout from "../utils/svg/Logout";
 
 const SidebarD = styled.div`
   margin-top: 60px;
   width: 17%;
   height: 150vh;
   position: fixed;
-  z-index: 99;
+  z-index: 999;
+  background: #ffffff;
+
+  @media (max-width: 1024px) {
+    width: 295px;
+    top: 0;
+    left: 0;
+    margin-top: 0px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+const SidebarMain = styled.div`
+  @media (max-width: 1024px) {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999999;
+  }
+`;
+
+const SidebarImg = styled.img`
+  width: 95px;
+  height: 32px;
+  margin: 100px 0;
+
+  @media (min-width: 1024px) {
+    display: none;
+  }
 `;
 
 const SidebarItems = styled.div`
   display: flex;
   flex-direction: column;
   cursor: pointer;
+
+  @media (max-width: 1024px) {
+    width: 100%;
+  }
 `;
 
-const SidebarItem = styled(Link)`
+const SidebarItem = styled.button`
   background: #ffffff;
   border: none;
   display: flex;
@@ -44,6 +83,11 @@ const SidebarItem = styled(Link)`
   &.clicked p {
     color: #561fe7;
   }
+
+  @media (max-width: 1024px) {
+    align-items: center;
+    height: 72px;
+  }
 `;
 
 const SidebarItemPara = styled.p`
@@ -60,17 +104,61 @@ const SidebarInnerItem = styled.div`
   flex-direction: row;
 `;
 
-const Sidebar = ({ activeItem }) => {
+const SidebarFooter = styled.div`
+  display: none;
+  @media (max-width: 1024px) {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+  }
+`;
+
+const SidebarButton = styled.button`
+  border: none;
+  background: none;
+  font-size: 14px;
+  color: #667085;
+  border: none;
+  background: none;
+`;
+
+const Sidebar = ({ closeSidebar }) => {
+  const [modal, setModal] = useState(false);
+  const navigate = useNavigate();
+  // eslint-disable-next-line no-restricted-globals
+  const activeItem = location.pathname.includes("add-user");
+  const handleNavigate = (path) => {
+    navigate(path);
+    if (window.innerWidth <= 1024) {
+      closeSidebar();
+    }
+  };
+
+  const handleLogout = () => {
+    document.cookie =
+    "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    localStorage.removeItem("name");
+    localStorage.removeItem("imageUrl");
+    setModal(true);
+    setTimeout(() => {
+      setModal(false);
+    }, 3000);
+    navigate("/login");
+  };
+
   return (
-    <div>
+    <SidebarMain>
       <SidebarD>
+        <SidebarImg src="images/vector.png" alt="logo" />
         <SidebarItems>
           <SidebarItem
-            to={"/"}
-            className={`sidebar-item ${activeItem === 1 ? "clicked" : ""}`}
+            onClick={() => handleNavigate("/")}
+            className={`sidebar-item ${!activeItem ? "clicked" : ""}`}
           >
             <SidebarInnerItem>
-              {activeItem === 1 ? (
+              {!activeItem ? (
                 <>
                   <Team1 />
                 </>
@@ -78,16 +166,16 @@ const Sidebar = ({ activeItem }) => {
                 <>
                   <Team2 />
                 </>
-              )}{" "}
+              )}
               <SidebarItemPara>All Team Member</SidebarItemPara>
             </SidebarInnerItem>
           </SidebarItem>
           <SidebarItem
-            to={"/add-user"}
-            className={`sidebar-item ${activeItem === 2 ? "clicked" : ""}`}
+            onClick={() => handleNavigate("/add-user")}
+            className={`sidebar-item ${activeItem ? "clicked" : ""}`}
           >
             <SidebarInnerItem>
-              {activeItem === 2 ? (
+              {activeItem ? (
                 <>
                   <Create1 />
                 </>
@@ -95,14 +183,24 @@ const Sidebar = ({ activeItem }) => {
                 <>
                   <Create2 />
                 </>
-              )}{" "}
+              )}
               <SidebarItemPara>Create Profile</SidebarItemPara>
             </SidebarInnerItem>
           </SidebarItem>
         </SidebarItems>
+        <SidebarFooter>
+          <Logout />
+          <SidebarButton onClick={handleLogout}>Logout</SidebarButton>
+        </SidebarFooter>
       </SidebarD>
-    </div>
+      {modal ? (
+        <>
+          <SuccessModal text={"You have been successfully logout"} />
+        </>
+      ) : (
+        <></>
+      )}
+    </SidebarMain>
   );
 };
-
 export default Sidebar;

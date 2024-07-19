@@ -1,18 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
+import { loginUser } from "../api/authService";
+import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const LoginImage = styled.div`
-  padding: 50px;
+  @media (min-width: 1024px) {
+    padding: 50px;
+  }
+
+  @media (max-width: 320px) {
+    display: none;
+  }
 `;
 
 const LoginImageI = styled.img`
-  width: 580px;
-  height: 770px;
+  width: 480px;
+  height: 670px;
   top: 127px;
   left: 116px;
   gap: 0px;
   opacity: 0px;
   border-radius: 20px;
+
+  @media (max-width: 1024px) {
+    display: none;
+  }
 `;
 
 const Flex = styled.div`
@@ -27,12 +40,12 @@ const Frame = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  padding: 50px;
+  height: 100vh;
 `;
 
 const FrameImage = styled.img`
-  width: 148.48px;
-  height: 50px;
+  width: 136px;
+  height: 40px;
   gap: 0px;
   opacity: 0px;
 `;
@@ -68,9 +81,112 @@ const Line = styled.div`
   border: 1px solid #00000033;
 `;
 
+const InputDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: start;
+  padding: 30px 0;
+`;
+
+const AddInput = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 10px 0;
+
+  @media (max-width: 1024px) {
+    margin: 20px 0;
+  }
+`;
+
+const CardLabel = styled.label`
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+  margin-bottom: 5px;
+  font-family: "Open Sans";
+  &::after {
+    content: " *";
+    color: red;
+  }
+`;
+
+const CardInput = styled.input`
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #d0d5dd;
+  background: #ffffff;
+  font-family: "Open Sans";
+  width: 350px;
+  height: 20px;
+
+  &:focus {
+    outline: none;
+    border: #5b35da 1px solid;
+  }
+
+  @media (max-width: 1024px) {
+    height: 32px;
+  }
+`;
+
+const CardButton = styled.button`
+  margin: 10px 0;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  height: 40px;
+  width: 380px;
+  background: ${({ active }) => (active ? "#561fe7" : "#98a2b3")};
+  color: white;
+  cursor: ${({ active }) => (active ? "pointer" : "not-allowed")};
+
+  @media (max-width: 1024px) {
+    height: 44px;
+  }
+`;
+
 const Login = () => {
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const isActive = email && password;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!email) {
+      toast.error("Email is required");
+      return;
+    }
+    if (!validateEmail(email)) {
+      toast.error("Email format incorrect");
+      return;
+    }
+    if (!password) {
+      toast.error("Password is required");
+      return;
+    }
+    const data = await loginUser(email, password);
+    console.log(data.data);
+    if (data.data.ok) {
+      // login();
+      localStorage.setItem("name", data.data.user.name);
+      localStorage.setItem("imageUrl", data.data.user.imageUrl);
+      toast.success("Logged in successfully");
+      navigate("/");
+    } else {
+      toast.error("Invalid Credentials");
+    }
+  };
+
+  const validateEmail = (email) => {
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+
   return (
-    <div className="login">
+    <div>
+      <Toaster />
       <Flex>
         <LoginImage>
           <LoginImageI src="images/image 550.png" alt="" />
@@ -84,15 +200,38 @@ const Login = () => {
               Log in to continue and access all the features
             </FramePara>
           </div>
-          <div>
-            <label>Enter Email</label>
-            <input type="email" placeholder="vikr" />
+          <InputDiv>
+            <AddInput>
+              <CardLabel>Enter Email</CardLabel>
+              <CardInput
+                type="email"
+                value={email}
+                placeholder="Enter email"
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                }}
+              />
+            </AddInput>
+            <AddInput>
+              <CardLabel>Enter Password</CardLabel>
+              <CardInput
+                type="password"
+                value={password}
+                placeholder="Enter password"
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+              />
+            </AddInput>
 
-            <label>Enter Password</label>
-            <input type="password" placeholder="pppppp" />
-
-            <button>Login</button>
-          </div>
+            <CardButton
+              disabled={!isActive}
+              active={isActive}
+              onClick={handleSubmit}
+            >
+              Login
+            </CardButton>
+          </InputDiv>
         </Frame>
       </Flex>
     </div>

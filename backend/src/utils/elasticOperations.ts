@@ -19,10 +19,10 @@ interface UserHit {
 export const searchByEmail = async (email: string) => {
   try {
     const body = await client.search<UserHit>({
-      index: "abhilaksh_users2",
+      index: "abhilaksh_users3",
       body: {
         query: {
-          term: { email: email },
+          match_phrase: { email: email },
         },
       },
     });
@@ -31,8 +31,9 @@ export const searchByEmail = async (email: string) => {
     let elasticId: string = "";
     let mongoId: string = "";
 
+    let firstHit;
     if (userCount > 0) {
-      const firstHit = hits[0];
+      firstHit = hits[0];
       elasticId = String(firstHit._id);
       mongoId = (firstHit._source as { mongoId?: string })?.mongoId || "";
     }
@@ -47,7 +48,7 @@ export const searchByEmail = async (email: string) => {
         break;
       }
     }
-    return { existingUserActive, isDeleted, elasticId, mongoId };
+    return { existingUserActive, isDeleted, firstHit, elasticId, mongoId };
   } catch (err) {
     console.log(err);
   }
@@ -62,7 +63,7 @@ export const userUpdateElastic = async (
 ) => {
   try {
     return await client.update({
-      index: "abhilaksh_users2",
+      index: "abhilaksh_users3",
       id: elasticId,
       body: {
         doc: {
@@ -89,7 +90,7 @@ export const createIndex = async (
 ) => {
   try {
     return await client.index({
-      index: "abhilaksh_users2",
+      index: "abhilaksh_users3",
       body: {
         name,
         email,
@@ -108,14 +109,14 @@ export const createIndex = async (
 export const searchById = async (id: string): Promise<any> => {
   try {
     const body = await client.search<UserHit>({
-      index: "abhilaksh_users2",
+      index: "abhilaksh_users3",
       body: {
         query: {
           match: { mongoId: id },
         },
       },
     });
-
+    console.log(body, "body");
     if (body?.hits?.hits.length > 0) {
       return body.hits.hits[0];
     } else {
@@ -130,7 +131,7 @@ export const searchById = async (id: string): Promise<any> => {
 export const deleteUser = async (elasticId: string) => {
   try {
     return await client.update({
-      index: "abhilaksh_users2",
+      index: "abhilaksh_users3",
       id: elasticId,
       refresh: true,
       body: {
@@ -156,7 +157,7 @@ export const getUsersService = async (
       },
     };
 
-    if (query) {
+    if (query !== " ") {
       baseQuery.bool.should = [
         {
           wildcard: {
@@ -181,7 +182,7 @@ export const getUsersService = async (
     }
 
     const body: any = await client.search({
-      index: "abhilaksh_users2",
+      index: "abhilaksh_users3",
       body: {
         query: baseQuery,
         from: from,

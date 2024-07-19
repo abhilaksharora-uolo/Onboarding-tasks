@@ -8,17 +8,24 @@ const ProfileD = styled.div`
   border: 1px 0px 0px 0px;
   border: 1px solid #e2e2e2;
   width: 270px;
-  height: 366px;
   background: #f6f6f6;
   margin: 10px;
   overflow: hidden;
   position: relative;
   font-family: Outfit;
+  z-index: 98;
+
+  @media (max-width: 1024px) {
+    width: 160px;
+    height: 240px;
+    z-index: 98;
+  }
 
   &:hover {
     .delete-btn {
       visibility: visible;
     }
+  }
 `;
 
 const DeleteButton = styled.button`
@@ -35,6 +42,11 @@ const ProfileImg = styled.img`
   width: 270px;
   height: 270px;
   z-index: 1;
+
+  @media (max-width: 1024px) {
+    width: 160px;
+    height: 160px;
+  }
 `;
 
 const ProfileTitle = styled.h3`
@@ -42,6 +54,9 @@ const ProfileTitle = styled.h3`
   font-weight: 700;
   color: #101828;
   margin: 0;
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
 `;
 
 const ProfilePara = styled.p`
@@ -49,6 +64,9 @@ const ProfilePara = styled.p`
   font-weight: 400;
   color: #101828;
   margin: 0;
+  @media (max-width: 1024px) {
+    font-size: 16px;
+  }
 `;
 
 const ProfileContent = styled.div`
@@ -61,7 +79,6 @@ const ProfileContent = styled.div`
 `;
 
 const Profile = ({ user, onDelete }) => {
-  console.log(user)
   return (
     <div>
       <Toaster />
